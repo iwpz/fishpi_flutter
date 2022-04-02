@@ -1,2 +1,3 @@
 # fishpi_flutter
-FishPi Flutter client
+
+Fishpi Flutter Project.
