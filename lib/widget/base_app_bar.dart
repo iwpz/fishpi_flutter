@@ -1,3 +1,4 @@
+import 'package:fishpi_flutter/style/global_style.dart';
 import 'package:fishpi_flutter/tools/navigator_tool.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +30,7 @@ class _BaseAppBarState extends State<BaseAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Color(0xFF005EBA),
+      backgroundColor: GlobalStyle.mainThemeColor,
       centerTitle: true,
       leading: widget.showBack == true
           ? GestureDetector(

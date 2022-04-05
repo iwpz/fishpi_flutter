@@ -16,4 +16,14 @@ class Api {
   static getUserInfo() {
     return RequestManager.get('/api/user');
   }
+
+  static sendMessage(String message) {
+    var data = {'content': message};
+    return RequestManager.post('/chat-room/send', data: data);
+  }
+
+  static openRedPack(String oId) {
+    var data = {'oId': oId};
+    return RequestManager.post('/chat-room/red-packet/open', data: data);
+  }
 }

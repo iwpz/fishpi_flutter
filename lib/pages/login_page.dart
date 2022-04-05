@@ -1,4 +1,5 @@
 import 'package:fishpi_flutter/api/api.dart';
+import 'package:fishpi_flutter/manager/data_manager.dart';
 import 'package:fishpi_flutter/manager/request_manager.dart';
 import 'package:fishpi_flutter/pages/index_page.dart';
 import 'package:fishpi_flutter/tools/navigator_tool.dart';
@@ -19,14 +20,19 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _pwdController = TextEditingController();
 
   void _loginAction() async {
-    var res =
-        await Api.getKey(nameOrEmail: _userNameController.text, userPassword: StringTool.getMd5(_pwdController.text));
+    var res = await Api.getKey(
+        nameOrEmail: _userNameController.text,
+        userPassword: StringTool.getMd5(_pwdController.text));
     print(res);
     if (res['code'] == 0) {
       RequestManager.updateApiKey(res['Key']);
       print('缓存ApiKey:${res['Key']}');
       SPTool().setStorage('ApiKey', res['Key']);
-      NavigatorTool.pushAndRemove(context, page: IndexPage());
+      var ress = await Api.getUserInfo();
+      if (ress['code'] == 0) {
+        DataManager.myInfo = ress['data'];
+        NavigatorTool.pushAndRemove(context, page: IndexPage());
+      }
     } else {
       Fluttertoast.showToast(msg: res['msg']);
     }

@@ -1,4 +1,5 @@
 import 'package:fishpi_flutter/api/api.dart';
+import 'package:fishpi_flutter/manager/data_manager.dart';
 import 'package:fishpi_flutter/manager/request_manager.dart';
 import 'package:fishpi_flutter/pages/index_page.dart';
 import 'package:fishpi_flutter/pages/login_page.dart';
@@ -41,6 +42,7 @@ class _SplashPageState extends State<SplashPage> {
       var res = await Api.getUserInfo();
 
       if (res['code'] == 0) {
+        DataManager.myInfo = res['data'];
         NavigatorTool.pushAndRemove(context, page: IndexPage());
       } else {
         SPTool().removeStorage('ApiKey');

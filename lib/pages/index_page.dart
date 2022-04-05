@@ -1,3 +1,5 @@
+import 'package:fishpi_flutter/manager/websocket_manager.dart';
+import 'package:fishpi_flutter/pages/chat_room_page.dart';
 import 'package:flutter/material.dart';
 
 import 'chat_list_page.dart';
@@ -13,10 +15,17 @@ class _IndexPageState extends State<IndexPage> {
   int _tabIndex = 0;
 
   final pages = [
-    ChatListPage(),
+    ChatRoomPage(),
     Icon(Icons.directions_transit),
     Icon(Icons.directions_bike),
   ];
+
+  @override
+  void initState() {
+    WebsocketManager manager = WebsocketManager();
+    manager.init();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'package:fishpi_flutter/api/api.dart';
 import 'package:fishpi_flutter/widget/base_app_bar.dart';
 import 'package:fishpi_flutter/widget/base_page.dart';
+import 'package:fishpi_flutter/widget/chat_list/chat_list_item.dart';
 import 'package:flutter/material.dart';
 
 class ChatListPage extends StatefulWidget {
@@ -11,6 +12,7 @@ class ChatListPage extends StatefulWidget {
 }
 
 class _ChatListPageState extends State<ChatListPage> {
+  List? messageList = List.empty(growable: true);
   @override
   void initState() {
     // TODO: implement initState
@@ -20,7 +22,14 @@ class _ChatListPageState extends State<ChatListPage> {
 
   void _getHistoryMessage() async {
     var res = await Api.getChatHistoryMessage(page: 1);
-    print(res);
+    if (res['code'] == 0) {
+      setState(() {
+        messageList = res['data'];
+      });
+
+      print(messageList![0]);
+      // print(res['data']);
+    }
   }
 
   @override
@@ -30,7 +39,21 @@ class _ChatListPageState extends State<ChatListPage> {
         title: '聊天',
         showBack: false,
       ),
-      child: Text('聊天列表'),
+      child: ListView.builder(
+        itemCount: 1,
+        itemBuilder: (context, index) {
+          return messageList!.length > 0
+              ? ChatListItem(
+                  title: messageList![0]['userNickname'].toString(),
+                  content: messageList![0]['content'].toString(),
+                  time: messageList![0]['time'].toString(),
+                  avatar:messageList![0]['userAvatarURL'].toString() ,
+                )
+              : Container(
+                  child: Text('empty'),
+                );
+        },
+      ),
     );
   }
 }
