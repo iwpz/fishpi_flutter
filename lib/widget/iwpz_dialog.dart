@@ -7,6 +7,8 @@ class IWPZDialog {
     String title = '', //标题
     String content = '', //正文，如果有contentWidget，则无视
     Widget? contentWidget, //正文widget
+    bool showCancelWidget = false,
+    Widget? cancelWidget,
     bool showCancel = true, //是否显示取消
     bool tapToDismiss = true, //点击空白处关闭
     bool cancelToDismiss = true, //点击取消是否关闭
@@ -100,8 +102,10 @@ class IWPZDialog {
                                         ),
                                       ),
                                     )
-                                  : Container(),
-                              showCancel
+                                  : showCancelWidget
+                                      ? cancelWidget ?? Container()
+                                      : Container(),
+                              showCancel || showCancelWidget
                                   ? Container(
                                       width: 1,
                                       height: 30,

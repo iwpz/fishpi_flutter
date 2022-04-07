@@ -19,12 +19,14 @@ class _IndexPageState extends State<IndexPage> {
     Icon(Icons.directions_transit),
     Icon(Icons.directions_bike),
   ];
+  late PageController _pageController;
 
   @override
   void initState() {
     WebsocketManager manager = WebsocketManager();
     manager.init();
     super.initState();
+    _pageController = PageController(initialPage: _tabIndex, keepPage: true);
   }
 
   @override
@@ -32,20 +34,26 @@ class _IndexPageState extends State<IndexPage> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _tabIndex,
-            onTap: (index) {
-              setState(() {
-                _tabIndex = index;
-              });
-            },
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.chat_rounded), label: '聊天室'),
-              BottomNavigationBarItem(icon: Icon(Icons.nightlight), label: '清风明月'),
-              BottomNavigationBarItem(icon: Icon(Icons.account_circle_outlined), label: '我的'),
-            ],
-          ),
-          body: pages[_tabIndex]),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _tabIndex,
+          onTap: (index) {
+            setState(() {
+              _tabIndex = index;
+              _pageController.jumpToPage(index);
+            });
+          },
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.chat_rounded), label: '聊天室'),
+            BottomNavigationBarItem(icon: Icon(Icons.nightlight), label: '清风明月'),
+            BottomNavigationBarItem(icon: Icon(Icons.account_circle_outlined), label: '我的'),
+          ],
+        ),
+        body: PageView(
+          children: pages,
+          controller: _pageController,
+          physics: NeverScrollableScrollPhysics(),
+        ),
+      ),
     );
   }
 }

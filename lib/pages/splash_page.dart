@@ -32,7 +32,7 @@ class _SplashPageState extends State<SplashPage> {
 
     print('获取APIkey：');
     print(apiKey);
-    if (apiKey == null || apiKey.isEmpty) {
+    if (apiKey.isEmpty) {
       Future.delayed(const Duration(milliseconds: 2000), () {
         NavigatorTool.push(context, page: LoginPage());
       });

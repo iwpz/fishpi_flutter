@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fishpi_flutter/api/api.dart';
 import 'package:fishpi_flutter/manager/chat_room_message_manager.dart';
 import 'package:fishpi_flutter/widget/base_app_bar.dart';
 import 'package:fishpi_flutter/widget/base_page.dart';
+import 'package:fishpi_flutter/widget/iwpz_dialog.dart';
+import 'package:fishpi_flutter/widget/medal_widget.dart';
 import 'package:fishpi_flutter/widget/redpack_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
@@ -13,6 +16,8 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_html/flutter_html.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_viewer/image_viewer.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ChatRoomPage extends StatefulWidget {
   ChatRoomPage({Key? key}) : super(key: key);
@@ -21,10 +26,16 @@ class ChatRoomPage extends StatefulWidget {
   State<ChatRoomPage> createState() => _ChatRoomPageState();
 }
 
-class _ChatRoomPageState extends State<ChatRoomPage> {
+class _ChatRoomPageState extends State<ChatRoomPage> with AutomaticKeepAliveClientMixin {
   List<types.Message> _messages = [];
+  final TextEditingController _redPacketScoreController = TextEditingController();
+  late String _redPacketTotalScore = '32';
+  final TextEditingController _redPacketCountController = TextEditingController();
+  final TextEditingController _redPacketMessageController = TextEditingController();
+
   final TextEditingController _textInputController = TextEditingController();
   final _user = const types.User(id: '06c33e8b-e835-4736-80f4-63f44b66666c');
+  String redpackType = '拼手气';
 
   @override
   void initState() {
@@ -151,6 +162,140 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     });
   }
 
+  void _onRedPackSelect() async {
+    _redPacketScoreController.text = '32';
+    _redPacketCountController.text = '2';
+    _redPacketTotalScore = _redPacketScoreController.text;
+
+    _redPacketMessageController.text = '摸鱼者，事竟成！';
+    IWPZDialog.show(
+      context,
+      title: '发红包',
+      height: 350,
+      showCancelWidget: true,
+      showCancel: false,
+      cancelWidget: Text('总计：$_redPacketTotalScore'),
+      contentWidget: StatefulBuilder(
+        builder: (context, builderState) {
+          return Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    const Text('拼:'),
+                    Radio(
+                        groupValue: redpackType,
+                        value: '拼手气',
+                        onChanged: (String? value) {
+                          builderState(() {
+                            redpackType = value!;
+                          });
+                        }),
+                    const Text('普:'),
+                    Radio(
+                        groupValue: redpackType,
+                        value: '普通',
+                        onChanged: (String? value) {
+                          builderState(() {
+                            redpackType = value!;
+                          });
+                        }),
+                    const Text('专:'),
+                    Radio(
+                        groupValue: redpackType,
+                        value: '专属',
+                        onChanged: (String? value) {
+                          builderState(() {
+                            redpackType = value!;
+                          });
+                        }),
+                    const Text('心:'),
+                    Radio(
+                        groupValue: redpackType,
+                        value: '心跳',
+                        onChanged: (String? value) {
+                          builderState(() {
+                            redpackType = value!;
+                          });
+                        }),
+                    const Text('猜:'),
+                    Radio(
+                        groupValue: redpackType,
+                        value: '猜拳',
+                        onChanged: (String? value) {
+                          print(value);
+                          builderState(() {
+                            redpackType = value!;
+                          });
+                        }),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text('积分:'),
+                    Container(
+                      width: 80,
+                      child: TextField(
+                        controller: _redPacketScoreController,
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          builderState(() {
+                            _redPacketTotalScore = value;
+                          });
+                        },
+                      ),
+                    )
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text('个数:'),
+                    Container(
+                      width: 80,
+                      child: TextField(
+                        controller: _redPacketCountController,
+                      ),
+                    )
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text('留言:'),
+                    Expanded(
+                      child: TextField(
+                        controller: _redPacketMessageController,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _onFaceSelect() async {
+    var res = await Api.getFacePack();
+    print(res);
+  }
+
+  void _onImageSelect() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    print('选择了图片：');
+    print(image!.path);
+    var res = await Api.upload([image]);
+    if (res['code'] == 0) {
+      Map imgMap = res['data']['succMap'];
+      String imageName = imgMap.keys.first;
+      String fileUrl = imgMap[imageName];
+      _textInputController.text = '![$imageName](${fileUrl})';
+    }
+  }
+
   void _handleSendPressed(types.PartialText message) {
     _sendMessageReq(message.text);
   }
@@ -213,10 +358,14 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
   Widget _getMessageWidget(types.CustomMessage message) {
     print('获取消息');
-    if (message.metadata!['content'].toString().contains('汗滴禾下土')) {
-      print(message);
+    var metals = {};
+    if (message.metadata!['sysMetal'] != null) {
+      try {
+        metals = json.decode(message.metadata!['sysMetal']);
+      } catch (ex) {
+        metals = {};
+      }
     }
-    var metals = json.decode(message.metadata!['sysMetal']);
     bool isMessage = true;
     Map redPack = {};
     if (message.metadata!['content'].toString().startsWith('{')) {
@@ -224,87 +373,99 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       redPack = json.decode(message.metadata!['content']);
     }
     return Container(
-      color: Colors.red,
-      child: Column(
+      color: Colors.white,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 40,
-            child: Row(
-              children: [
-                Container(
-                  height: 30,
-                  width: 30,
-                  margin: const EdgeInsets.only(left: 10, top: 10, right: 10),
-                  child: CachedNetworkImage(
-                      imageUrl: message.metadata!['userAvatarURL']),
-                ),
-                Text(message.metadata!['userNickname']),
-                metals['list'] == null
-                    ? Container()
-                    : Container(
-                        height: 30,
-                        // width: 60,
-                        margin: const EdgeInsets.only(left: 10),
-                        child: Text(metals['list'][0]['name']),
-                      ),
-              ],
-            ),
+          Container(
+            height: 30,
+            width: 30,
+            margin: const EdgeInsets.only(left: 10, top: 10, right: 10),
+            child: CachedNetworkImage(imageUrl: message.metadata!['userAvatarURL']),
           ),
-          isMessage
-              ? Html(
-                  data: message.metadata!['content'],
-                  /*
-                   String? url,
-    RenderContext context,
-    Map<String, String> attributes,
-    dom.Element? element,
-                   */
-                  onImageTap: (String? url, RenderContext rContext,
-                      Map<String, String> attributes, element) {
-                    print(url);
-                    ImageViewer.showImageSlider(
-                      images: [
-                        url!,
-                      ],
-                    );
-                  },
-                )
-              : GestureDetector(
-                  onTap: () async {
-                    var res = await Api.openRedPack(message.id);
-                    RedpackDialog.show(context, redPack: res);
-                  },
-                  child: Container(
-                    height: 60,
-                    margin: const EdgeInsets.only(
-                        left: 40, right: 40, top: 10, bottom: 10),
-                    width: double.infinity,
-                    color: redPack['count'] == redPack['got']
-                        ? const Color.fromARGB(255, 243, 208, 162)
-                        : Colors.orange,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.only(left: 10),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 40,
+                    margin: const EdgeInsets.only(top: 10),
+                    child: Wrap(
+                      direction: Axis.horizontal,
+                      alignment: WrapAlignment.start,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 5,
                       children: [
-                        Text(redPack['msg']),
-                        Text(redPack['type'] == 'rockPaperScissors'
-                            ? '石头剪刀布红包'
-                            : redPack['type'] == 'random'
-                                ? '拼手气红包'
-                                : redPack['type'] == 'average'
-                                    ? '普通红包'
-                                    : redPack['type'] == 'specify'
-                                        ? '专属红包'
-                                        : redPack['type'] == 'heartbeat'
-                                            ? '心跳红包'
-                                            : '未知红包???'),
-                        Text('${redPack['got']}/${redPack['count']}' +
-                            (redPack['count'] == redPack['got']
-                                ? '红包被抢光啦！'
-                                : '')),
+                        Text(message.metadata!['userNickname'].isEmpty
+                            ? message.metadata!['userName']
+                            : '${message.metadata!['userNickname']} (${message.metadata!['userName']})'),
+                        ...metals == null || metals['list'] == null
+                            ? []
+                            : List.generate(metals['list'].length, (index) {
+                                if (metals['list'][index]['enabled'] == true) {
+                                  return MedalWidget(medal: metals['list'][index]);
+                                }
+                                return Container();
+                              }),
                       ],
                     ),
                   ),
-                ),
+                  isMessage
+                      ? Html(
+                          data: message.metadata!['content'],
+                          onImageTap: (String? url, RenderContext rContext, Map<String, String> attributes, element) {
+                            ImageViewer.showImageSlider(
+                              images: [
+                                url!,
+                              ],
+                            );
+                          },
+                        )
+                      : GestureDetector(
+                          onTap: () async {
+                            var res = await Api.openRedPack(message.id);
+                            RedpackDialog.show(context, redPack: res);
+                          },
+                          child: Container(
+                            height: 60,
+                            margin: const EdgeInsets.only(left: 40, right: 40, top: 10, bottom: 10),
+                            width: double.infinity,
+                            color: redPack['count'] == redPack['got']
+                                ? const Color.fromARGB(255, 243, 208, 162)
+                                : Colors.orange,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(redPack['msg']),
+                                Text(redPack['type'] == 'rockPaperScissors'
+                                    ? '石头剪刀布红包'
+                                    : redPack['type'] == 'random'
+                                        ? '拼手气红包'
+                                        : redPack['type'] == 'average'
+                                            ? '普通红包'
+                                            : redPack['type'] == 'specify'
+                                                ? '专属红包'
+                                                : redPack['type'] == 'heartbeat'
+                                                    ? '心跳红包'
+                                                    : '未知红包???'),
+                                Text('${redPack['got']}/${redPack['count']}' +
+                                    (redPack['count'] == redPack['got'] ? '红包被抢光啦！' : '')),
+                              ],
+                            ),
+                          ),
+                        ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -339,29 +500,79 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           onPreviewDataFetched: _handlePreviewDataFetched,
           onSendPressed: _handleSendPressed,
           user: _user,
-          customBottomWidget: SizedBox(
+          customBottomWidget: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0xFFCECECE),
+                  offset: Offset(0, -1),
+                  spreadRadius: 1,
+                  blurRadius: 3,
+                ),
+              ],
+            ),
             height: 100,
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: TextField(
-                    controller: _textInputController,
+                Container(
+                  height: 40,
+                  margin: const EdgeInsets.only(left: 10),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: _onImageSelect,
+                        child: const Icon(Icons.image),
+                      ),
+                      const SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: _onFaceSelect,
+                        child: const Icon(Icons.emoji_emotions),
+                      ),
+                      const SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: _onRedPackSelect,
+                        child: const Icon(Icons.money),
+                      ),
+                      Expanded(child: Container()),
+                      FocusScope.of(context).hasFocus
+                          ? GestureDetector(
+                              onTap: () {
+                                FocusScope.of(context).unfocus();
+                              },
+                              child: const Icon(Icons.keyboard_arrow_down_rounded),
+                            )
+                          : Container(),
+                      const SizedBox(width: 10),
+                    ],
                   ),
                 ),
-                GestureDetector(
-                  onTap: () async {
-                    _sendMessageReq(_textInputController.text);
-                  },
-                  child: const SizedBox(
-                    width: 80,
-                    child: Text('发送'),
-                  ),
+                const Divider(
+                  height: 0.5,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _textInputController,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        _sendMessageReq(_textInputController.text);
+                      },
+                      child: const SizedBox(
+                        width: 40,
+                        child: Text('发送'),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-          customMessageBuilder: (types.CustomMessage message,
-              {int messageWidth = 10}) {
+          customMessageBuilder: (types.CustomMessage message, {int messageWidth = 10}) {
             String type = message.metadata!['type'];
             if (type == 'msg') {
               return _getMessageWidget(message);
@@ -372,4 +583,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           }),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

@@ -71,9 +71,9 @@ class RequestManager {
   static Dio _dio = Dio(_options);
 
   static Future<T> _request<T>(String path,
-      {required String method, Map? params, data, CancelToken? cancelToken}) async {
+      {required String method, Map? params, data, CancelToken? cancelToken, String contentType = ''}) async {
     if (method == 'post' || method == 'delete' || method == 'put') {
-      if (apiKey.isNotEmpty) {
+      if (apiKey.isNotEmpty && !path.contains('upload')) {
         if (data != null) {
           data['apiKey'] = apiKey;
         } else {
@@ -82,7 +82,7 @@ class RequestManager {
       }
       longPrint('data:$data');
     } else {
-      if (apiKey.isNotEmpty) {
+      if (apiKey.isNotEmpty && !path.contains('upload')) {
         if (params != null) {
           params['apiKey'] = apiKey;
         } else {
@@ -100,6 +100,7 @@ class RequestManager {
       });
       path = path.substring(0, path.length - 1);
     }
+    _options.contentType = contentType;
     print('🚀🚀🚀==========================================================================');
     print('request:');
     print(_options.baseUrl + path);
@@ -241,8 +242,10 @@ class RequestManager {
     return _request(path, method: 'get', params: params, cancelToken: cancelToken);
   }
 
-  static Future<T> post<T>(String path, {Map? params, data, CancelToken? cancelToken}) {
-    return _request(path, method: 'post', params: params, data: data, cancelToken: cancelToken);
+  static Future<T> post<T>(String path,
+      {Map? params, data, CancelToken? cancelToken, String contentType = 'application/json'}) {
+    return _request(path,
+        method: 'post', params: params, data: data, cancelToken: cancelToken, contentType: contentType);
   }
 
   static Future<T> patch<T>(String path, {Map? params, data, CancelToken? cancelToken}) {
