@@ -28,6 +28,11 @@ class ChatRoomPage extends StatefulWidget {
 
 class _ChatRoomPageState extends State<ChatRoomPage> with AutomaticKeepAliveClientMixin {
   List<types.Message> _messages = [];
+  int onlineCount = 0;
+  List onlineUsers = [];
+  Map specifyChoosedUsers = {};
+  String currentDiscussing = '';
+  int specifyRedPackCount = 0;
   final TextEditingController _redPacketScoreController = TextEditingController();
   late String _redPacketTotalScore = '32';
   final TextEditingController _redPacketCountController = TextEditingController();
@@ -35,7 +40,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> with AutomaticKeepAliveClie
 
   final TextEditingController _textInputController = TextEditingController();
   final _user = const types.User(id: '06c33e8b-e835-4736-80f4-63f44b66666c');
-  String redpackType = '拼手气';
+  String redpackType = 'random';
+  int rockPackType = 0;
 
   @override
   void initState() {
@@ -166,15 +172,31 @@ class _ChatRoomPageState extends State<ChatRoomPage> with AutomaticKeepAliveClie
     _redPacketScoreController.text = '32';
     _redPacketCountController.text = '2';
     _redPacketTotalScore = _redPacketScoreController.text;
+    specifyRedPackCount = 0;
 
     _redPacketMessageController.text = '摸鱼者，事竟成！';
     IWPZDialog.show(
       context,
       title: '发红包',
-      height: 350,
-      showCancelWidget: true,
-      showCancel: false,
-      cancelWidget: Text('总计：$_redPacketTotalScore'),
+      backgroundColor: const Color(0xFFCECECE),
+      height: MediaQuery.of(context).size.height,
+      showCancel: true,
+      onOKTap: () async {
+        List selectedUsers = List.empty(growable: true);
+        for (int i = 0; i < specifyChoosedUsers.length; i++) {
+          selectedUsers.add(specifyChoosedUsers['userName']);
+        }
+        var res = await Api.sendRedPacket(
+          type: redpackType,
+          money: int.parse(_redPacketScoreController.text),
+          count: int.parse(_redPacketCountController.text),
+          msg: _redPacketMessageController.text,
+          recivers: redpackType == 'average' ? selectedUsers : [],
+          gesture: redpackType == 'rockPaperScissors' ? rockPackType : -1,
+        );
+        print('红包-----');
+        print(res);
+      },
       contentWidget: StatefulBuilder(
         builder: (context, builderState) {
           return Container(
@@ -183,54 +205,165 @@ class _ChatRoomPageState extends State<ChatRoomPage> with AutomaticKeepAliveClie
               children: [
                 Row(
                   children: [
+                    // random(拼手气红包), average(平分红包)，specify(专属红包)，heartbeat(心跳红包)
                     const Text('拼:'),
                     Radio(
                         groupValue: redpackType,
-                        value: '拼手气',
+                        value: 'random',
                         onChanged: (String? value) {
                           builderState(() {
+                            _redPacketMessageController.text = '摸鱼者，事竟成！';
+                            _redPacketCountController.text = '2';
+
                             redpackType = value!;
                           });
                         }),
                     const Text('普:'),
                     Radio(
                         groupValue: redpackType,
-                        value: '普通',
+                        value: 'average',
                         onChanged: (String? value) {
+                          setState(() {
+                            _redPacketTotalScore = (int.parse(_redPacketScoreController.text) *
+                                    (int.parse(_redPacketCountController.text)))
+                                .toString();
+                          });
+
                           builderState(() {
                             redpackType = value!;
+                            _redPacketCountController.text = '2';
+                            _redPacketMessageController.text = '平分红包，人人有份！';
                           });
                         }),
                     const Text('专:'),
                     Radio(
                         groupValue: redpackType,
-                        value: '专属',
+                        value: 'specify',
                         onChanged: (String? value) {
                           builderState(() {
                             redpackType = value!;
+                            _redPacketMessageController.text = '试试看，这是给你的红包吗？';
                           });
                         }),
                     const Text('心:'),
                     Radio(
                         groupValue: redpackType,
-                        value: '心跳',
+                        value: 'heartbeat',
                         onChanged: (String? value) {
                           builderState(() {
                             redpackType = value!;
+                            _redPacketMessageController.text = '玩的就是心跳！';
+                            _redPacketCountController.text = '2';
+                            _redPacketTotalScore = _redPacketScoreController.text;
                           });
                         }),
                     const Text('猜:'),
                     Radio(
                         groupValue: redpackType,
-                        value: '猜拳',
+                        value: 'rockPaperScissors',
                         onChanged: (String? value) {
                           print(value);
                           builderState(() {
                             redpackType = value!;
+                            _redPacketCountController.text = '1';
+                            _redPacketMessageController.text = '石头剪刀布！';
                           });
                         }),
                   ],
                 ),
+                //specify
+                redpackType == 'specify'
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('发给谁:'),
+                          Container(
+                              width: MediaQuery.of(context).size.width * 0.6,
+                              height: 200,
+                              child: ListView.builder(
+                                itemCount: onlineUsers.length,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      builderState(() {
+                                        String userName = onlineUsers[index]['userName'];
+                                        if (specifyChoosedUsers.keys.contains(userName)) {
+                                          builderState(() {
+                                            specifyRedPackCount--;
+                                            specifyChoosedUsers.remove(userName);
+                                          });
+                                        } else {
+                                          specifyChoosedUsers[userName] = onlineUsers[index];
+                                        }
+                                        // if (onlineUsers[index]['selected'] == null ||
+                                        //     onlineUsers[index]['selected'] == false) {
+                                        //   onlineUsers[index]['selected'] = true;
+                                        //   builderState(() {
+                                        //     specifyRedPackCount++;
+                                        //   });
+                                        // } else {
+                                        //   onlineUsers[index]['selected'] = false;
+                                        //   builderState(() {
+                                        //     specifyRedPackCount--;
+                                        //   });
+                                        // }
+                                        builderState(() {
+                                          _redPacketTotalScore =
+                                              (int.parse(_redPacketScoreController.text) * specifyChoosedUsers.length)
+                                                  .toString();
+                                          _redPacketCountController.text = specifyChoosedUsers.length.toString();
+                                        });
+                                      });
+                                    },
+                                    child: Container(
+                                      height: 40,
+                                      color: specifyChoosedUsers.keys.contains(onlineUsers[index]['userName'])
+                                          ? Colors.blue[200]
+                                          : const Color(0xFFCECECE),
+                                      child: Text(onlineUsers[index]['userName']),
+                                    ),
+                                  );
+                                },
+                              ))
+                        ],
+                      )
+                    : Container(),
+                redpackType == 'rockPaperScissors'
+                    ? Container(
+                        height: 60,
+                        child: Row(
+                          children: [
+                            const Text('石头:'),
+                            Radio(
+                                groupValue: rockPackType,
+                                value: 0,
+                                onChanged: (int? value) {
+                                  builderState(() {
+                                    rockPackType = value!;
+                                  });
+                                }),
+                            const Text('剪刀:'),
+                            Radio(
+                                groupValue: rockPackType,
+                                value: 1,
+                                onChanged: (int? value) {
+                                  builderState(() {
+                                    rockPackType = value!;
+                                  });
+                                }),
+                            const Text('布:'),
+                            Radio(
+                                groupValue: rockPackType,
+                                value: 2,
+                                onChanged: (int? value) {
+                                  builderState(() {
+                                    rockPackType = value!;
+                                  });
+                                }),
+                          ],
+                        ),
+                      )
+                    : Container(),
                 Row(
                   children: [
                     Text('积分:'),
@@ -241,7 +374,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> with AutomaticKeepAliveClie
                         keyboardType: TextInputType.number,
                         onChanged: (value) {
                           builderState(() {
-                            _redPacketTotalScore = value;
+                            if (redpackType == 'average') {
+                              _redPacketTotalScore =
+                                  (int.parse(value) * (int.parse(_redPacketCountController.text))).toString();
+                            } else {
+                              _redPacketTotalScore = value;
+                            }
                           });
                         },
                       ),
@@ -255,6 +393,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> with AutomaticKeepAliveClie
                       width: 80,
                       child: TextField(
                         controller: _redPacketCountController,
+                        enabled: redpackType != 'rockPaperScissors',
                       ),
                     )
                   ],
@@ -269,6 +408,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> with AutomaticKeepAliveClie
                     ),
                   ],
                 ),
+                Text('总计：$_redPacketTotalScore'),
               ],
             ),
           );
@@ -347,6 +487,15 @@ class _ChatRoomPageState extends State<ChatRoomPage> with AutomaticKeepAliveClie
         _messages.insert(0, message);
       });
     } else if (type == 'online') {
+      print('online----------');
+      print(msg);
+      setState(() {
+        onlineCount = msg['onlineChatCnt'];
+        currentDiscussing = msg['discussing'];
+        onlineUsers = msg['users'];
+      });
+      print('online----------');
+
       //更新在线信息
       // message = types.CustomMessage(
       //   id: '',
@@ -491,7 +640,11 @@ class _ChatRoomPageState extends State<ChatRoomPage> with AutomaticKeepAliveClie
   @override
   Widget build(BuildContext context) {
     return BasePage(
-      appBar: BaseAppBar(title: '聊天室', showBack: false),
+      appBar: BaseAppBar(
+        title: '聊天室',
+        showBack: false,
+        rightTitle: '在线人数：$onlineCount',
+      ),
       child: Chat(
           l10n: const ChatL10nZhCN(),
           messages: _messages,
@@ -536,6 +689,22 @@ class _ChatRoomPageState extends State<ChatRoomPage> with AutomaticKeepAliveClie
                         child: const Icon(Icons.money),
                       ),
                       Expanded(child: Container()),
+                      Row(
+                        children: [
+                          const Text(
+                            '当前话题：',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              _textInputController.text = _textInputController.text + ' `# $currentDiscussing #` \n';
+                            },
+                            child: Text('#$currentDiscussing#',
+                                style: const TextStyle(fontSize: 14, color: Color(0xFF569e3d))),
+                          ),
+                        ],
+                      ),
+                      SizedBox(width: 50),
                       FocusScope.of(context).hasFocus
                           ? GestureDetector(
                               onTap: () {

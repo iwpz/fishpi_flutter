@@ -23,8 +23,14 @@ class Api {
     return RequestManager.post('/chat-room/send', data: data);
   }
 
-  static sendRedPacket(
-      {String type = 'random', int money = 32, int count = 2, String msg = '摸鱼者，事竟成！', List? recivers}) {
+  static sendRedPacket({
+    String type = 'random',
+    int money = 32,
+    int count = 2,
+    String msg = '摸鱼者，事竟成！',
+    List? recivers,
+    int gesture = -1,
+  }) {
     String reciverStr = '[]';
     if (recivers != null && recivers.isNotEmpty) {
       reciverStr = '[';
@@ -35,9 +41,13 @@ class Api {
       reciverStr += ']';
       reciverStr.replaceAll(',]', ']');
     }
+    String gestureStr = '';
+    if (gesture != -1) {
+      gestureStr = ',\\"gesture\\":\\"$gesture\\"';
+    }
     var data = {
       'content':
-          '[redpacket]{\\"type\\":\\"$type\\",\\"money\\":\\"$money\\",\\"count\\":\\"$count\\",\\"msg\\":\\"$msg\\",\\"recivers\\":$reciverStr}[/redpacket]'
+          '[redpacket]{\\"type\\":\\"$type\\",\\"money\\":\\"$money\\",\\"count\\":\\"$count\\",\\"msg\\":\\"$msg\\",\\"recivers\\":$reciverStr$gestureStr}[/redpacket]'
     };
     return RequestManager.post('/chat-room/send', data: data);
   }
