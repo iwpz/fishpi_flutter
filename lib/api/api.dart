@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:fishpi_flutter/manager/request_manager.dart';
 
@@ -23,6 +25,10 @@ class Api {
     return RequestManager.post('/chat-room/send', data: data);
   }
 
+  static revokeMessage(String oId) {
+    return RequestManager.delete('/chat-room/revoke/$oId');
+  }
+
   static sendRedPacket({
     String type = 'random',
     int money = 32,
@@ -31,29 +37,28 @@ class Api {
     List? recivers,
     int gesture = -1,
   }) {
-    String reciverStr = '[]';
-    if (recivers != null && recivers.isNotEmpty) {
-      reciverStr = '[';
-      for (int i = 0; i < recivers.length; i++) {
-        reciverStr += recivers[i] + ',';
-      }
-      // reciverStr = reciverStr.substring(reciverStr.length - 2, 1);
-      reciverStr += ']';
-      reciverStr.replaceAll(',]', ']');
-    }
-    String gestureStr = '';
-    if (gesture != -1) {
-      gestureStr = ',\\"gesture\\":\\"$gesture\\"';
-    }
-    var data = {
-      'content':
-          '[redpacket]{\\"type\\":\\"$type\\",\\"money\\":\\"$money\\",\\"count\\":\\"$count\\",\\"msg\\":\\"$msg\\",\\"recivers\\":$reciverStr$gestureStr}[/redpacket]'
+    var redpackData = {
+      "type": type,
+      "money": money,
+      "count": count,
+      "msg": msg,
     };
+    if (type == 'specify' && recivers != null && recivers.isNotEmpty) {
+      print(recivers);
+      redpackData['recivers'] = recivers;
+    }
+    if (gesture != -1) {
+      redpackData['gesture'] = gesture;
+    }
+    var data = {'content': '[redpacket]' + json.encode(redpackData) + '[/redpacket]'};
     return RequestManager.post('/chat-room/send', data: data);
   }
 
-  static openRedPack(String oId) {
+  static openRedPack(String oId, {int gesture = -1}) {
     var data = {'oId': oId};
+    if (gesture != -1) {
+      data['gesture'] = gesture.toString();
+    }
     return RequestManager.post('/chat-room/red-packet/open', data: data);
   }
 
@@ -78,5 +83,18 @@ class Api {
   static getUserFacePack() {
     var data = {};
     return RequestManager.post('/users/emotions', data: data);
+  }
+
+  static getWindMoonList({int page = 1, int pageSize = 20}) {
+    Map<String, dynamic> params = {
+      "p": page,
+      "size": pageSize,
+    };
+    return RequestManager.get('/api/breezemoons', params: params);
+  }
+
+  static sendWindMoon(String content) {
+    var data = {'breezemoonContent': content};
+    return RequestManager.post('/breezemoon', data: data);
   }
 }

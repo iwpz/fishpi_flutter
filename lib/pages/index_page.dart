@@ -1,5 +1,7 @@
 import 'package:fishpi_flutter/manager/websocket_manager.dart';
 import 'package:fishpi_flutter/pages/chat_room_page.dart';
+import 'package:fishpi_flutter/pages/mine_page.dart';
+import 'package:fishpi_flutter/pages/wind_moon_page.dart';
 import 'package:flutter/material.dart';
 
 import 'chat_list_page.dart';
@@ -15,9 +17,9 @@ class _IndexPageState extends State<IndexPage> {
   int _tabIndex = 0;
 
   final pages = [
-    ChatRoomPage(),
-    Icon(Icons.directions_transit),
-    Icon(Icons.directions_bike),
+    ChatListPage(),
+    WindMoonPage(),
+    MinePage(),
   ];
   late PageController _pageController;
 

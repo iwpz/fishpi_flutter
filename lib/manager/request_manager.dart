@@ -30,7 +30,7 @@ class RequestManager {
       contentType: 'application/json',
       headers: {
         "user-agent": Platform.isIOS
-            ? "Mozilla/5.0 (Windows NT 10.0; WOW64) FishPiFlutter iOS AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"
+            ? "Mozilla/5.0 (iPhone; CPU iPhone OS 15_3_1 like Mac OS X) FishPiFlutter AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Mobile/15E148 Safari/604.1"
             : "Mozilla/5.0 (Windows NT 10.0; WOW64) FishPiFlutter Android AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36",
       },
     );
@@ -94,9 +94,7 @@ class RequestManager {
     if (params != null) {
       path = path + '?';
       params.forEach((key, value) {
-        if (!path.contains(key)) {
-          path = path += '$key=$value&';
-        }
+        path = path += '$key=$value&';
       });
       path = path.substring(0, path.length - 1);
     }
@@ -154,6 +152,9 @@ class RequestManager {
         return Future.error('HTTP错误');
       }
     } on DioError catch (e) {
+      print('dio error:');
+      print(e.error);
+      print(e.message);
       // LogUtil.error(_dioError(e));
       return Future.error(e);
     } catch (e) {
@@ -248,15 +249,21 @@ class RequestManager {
         method: 'post', params: params, data: data, cancelToken: cancelToken, contentType: contentType);
   }
 
-  static Future<T> patch<T>(String path, {Map? params, data, CancelToken? cancelToken}) {
-    return _request(path, method: 'patch', params: params, data: data, cancelToken: cancelToken);
+  static Future<T> patch<T>(String path,
+      {Map? params, data, CancelToken? cancelToken, String contentType = 'application/json'}) {
+    return _request(path,
+        method: 'patch', params: params, data: data, cancelToken: cancelToken, contentType: contentType);
   }
 
-  static Future<T> put<T>(String path, {Map? params, data, CancelToken? cancelToken}) {
-    return _request(path, method: 'put', params: params, data: data, cancelToken: cancelToken);
+  static Future<T> put<T>(String path,
+      {Map? params, data, CancelToken? cancelToken, String contentType = 'application/json'}) {
+    return _request(path,
+        method: 'put', params: params, data: data, cancelToken: cancelToken, contentType: contentType);
   }
 
-  static Future<T> delete<T>(String path, {Map? params, data, CancelToken? cancelToken}) {
-    return _request(path, method: 'delete', params: params, data: data, cancelToken: cancelToken);
+  static Future<T> delete<T>(String path,
+      {Map? params, data, CancelToken? cancelToken, String contentType = 'application/json'}) {
+    return _request(path,
+        method: 'delete', params: params, data: data, cancelToken: cancelToken, contentType: contentType);
   }
 }
