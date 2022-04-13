@@ -5,15 +5,20 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fishpi_flutter/api/api.dart';
 import 'package:fishpi_flutter/manager/chat_room_message_manager.dart';
 import 'package:fishpi_flutter/manager/data_manager.dart';
+import 'package:fishpi_flutter/pages/user_profile_page.dart';
+import 'package:fishpi_flutter/tools/navigator_tool.dart';
 import 'package:fishpi_flutter/widget/base_app_bar.dart';
 import 'package:fishpi_flutter/widget/base_page.dart';
 import 'package:fishpi_flutter/widget/iwpz_dialog.dart';
+import 'package:fishpi_flutter/widget/iwpz_textfield.dart';
+import 'package:fishpi_flutter/widget/medal_icon.dart';
 import 'package:fishpi_flutter/widget/medal_widget.dart';
 import 'package:fishpi_flutter/widget/redpack_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_viewer/image_viewer.dart';
 import 'package:image_picker/image_picker.dart';
@@ -99,8 +104,10 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     IWPZDialog.show(
       context,
       title: '发红包',
-      backgroundColor: const Color(0xFFCECECE),
-      height: MediaQuery.of(context).size.height,
+      titleColor: Colors.white,
+      okColor: Colors.white,
+      backgroundColor: Colors.red,
+      height: 530,
       showCancel: true,
       onOKTap: () async {
         List selectedUsers = List.empty(growable: true);
@@ -126,8 +133,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               Row(
                 children: [
                   // random(拼手气红包), average(平分红包)，specify(专属红包)，heartbeat(心跳红包)
-                  const Text('拼:'),
+                  const Text(
+                    '拼:',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   Radio(
+                      activeColor: Colors.white,
                       groupValue: redpackType,
                       value: 'random',
                       onChanged: (String? value) {
@@ -138,8 +149,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           redpackType = value!;
                         });
                       }),
-                  const Text('普:'),
+                  const Text(
+                    '普:',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   Radio(
+                      activeColor: Colors.white,
                       groupValue: redpackType,
                       value: 'average',
                       onChanged: (String? value) {
@@ -155,8 +170,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           _redPacketMessageController.text = '平分红包，人人有份！';
                         });
                       }),
-                  const Text('专:'),
+                  const Text(
+                    '专:',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   Radio(
+                      activeColor: Colors.white,
                       groupValue: redpackType,
                       value: 'specify',
                       onChanged: (String? value) {
@@ -165,8 +184,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           _redPacketMessageController.text = '试试看，这是给你的红包吗？';
                         });
                       }),
-                  const Text('心:'),
+                  const Text(
+                    '心:',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   Radio(
+                      activeColor: Colors.white,
                       groupValue: redpackType,
                       value: 'heartbeat',
                       onChanged: (String? value) {
@@ -177,8 +200,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           _redPacketTotalScore = _redPacketScoreController.text;
                         });
                       }),
-                  const Text('猜:'),
+                  const Text(
+                    '猜:',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   Radio(
+                      activeColor: Colors.white,
                       groupValue: redpackType,
                       value: 'rockPaperScissors',
                       onChanged: (String? value) {
@@ -195,7 +222,10 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   ? Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('发给谁:'),
+                        const Text(
+                          '发给谁:',
+                          style: TextStyle(color: Colors.white),
+                        ),
                         SizedBox(
                             width: MediaQuery.of(context).size.width * 0.6,
                             height: 200,
@@ -214,18 +244,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                       } else {
                                         specifyChoosedUsers[userName] = onlineUsers[index];
                                       }
-                                      // if (onlineUsers[index]['selected'] == null ||
-                                      //     onlineUsers[index]['selected'] == false) {
-                                      //   onlineUsers[index]['selected'] = true;
-                                      //   builderState(() {
-                                      //     specifyRedPackCount++;
-                                      //   });
-                                      // } else {
-                                      //   onlineUsers[index]['selected'] = false;
-                                      //   builderState(() {
-                                      //     specifyRedPackCount--;
-                                      //   });
-                                      // }
                                       builderState(() {
                                         _redPacketTotalScore =
                                             (int.parse(_redPacketScoreController.text) * specifyChoosedUsers.length)
@@ -236,10 +254,19 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                   },
                                   child: Container(
                                     height: 40,
-                                    color: specifyChoosedUsers.keys.contains(onlineUsers[index]['userName'])
-                                        ? Colors.blue[200]
-                                        : const Color(0xFFCECECE),
-                                    child: Text(onlineUsers[index]['userName']),
+                                    decoration: BoxDecoration(
+                                      color: specifyChoosedUsers.keys.contains(onlineUsers[index]['userName'])
+                                          ? Colors.blue[200]
+                                          : Colors.red,
+                                      border: const Border(
+                                        bottom: BorderSide(color: Color(0xFFCECECE)),
+                                      ),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      onlineUsers[index]['userName'],
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 );
                               },
@@ -252,8 +279,13 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                       height: 60,
                       child: Row(
                         children: [
-                          const Text('石头:'),
+                          Image.asset('assets/images/rock.png', height: 20, width: 20),
+                          const Text(
+                            ' :',
+                            style: TextStyle(color: Colors.white),
+                          ),
                           Radio(
+                              activeColor: Colors.white,
                               groupValue: rockPackType,
                               value: 0,
                               onChanged: (int? value) {
@@ -261,8 +293,13 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                   rockPackType = value!;
                                 });
                               }),
-                          const Text('剪刀:'),
+                          Image.asset('assets/images/knife.png', height: 20, width: 20),
+                          const Text(
+                            ' :',
+                            style: TextStyle(color: Colors.white),
+                          ),
                           Radio(
+                              activeColor: Colors.white,
                               groupValue: rockPackType,
                               value: 1,
                               onChanged: (int? value) {
@@ -270,8 +307,13 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                   rockPackType = value!;
                                 });
                               }),
-                          const Text('布:'),
+                          Image.asset('assets/images/rul.png', height: 20, width: 20),
+                          const Text(
+                            ' :',
+                            style: TextStyle(color: Colors.white),
+                          ),
                           Radio(
+                              activeColor: Colors.white,
                               groupValue: rockPackType,
                               value: 2,
                               onChanged: (int? value) {
@@ -285,49 +327,87 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   : Container(),
               Row(
                 children: [
-                  const Text('积分:'),
+                  const Text(
+                    '积分:',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   SizedBox(
                     width: 80,
-                    child: TextField(
-                      controller: _redPacketScoreController,
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        builderState(() {
-                          if (redpackType == 'average') {
-                            _redPacketTotalScore =
-                                (int.parse(value) * (int.parse(_redPacketCountController.text))).toString();
-                          } else {
-                            _redPacketTotalScore = value;
-                          }
-                        });
-                      },
+                    child: Container(
+                      height: 30,
+                      alignment: Alignment.center,
+                      child: IWPZTextField(
+                        contentPaddingValue: 5,
+                        borderRadius: BorderRadius.circular(4),
+                        backgroundColor: const Color.fromARGB(102, 248, 115, 115),
+                        style: const TextStyle(color: Colors.white),
+                        controller: _redPacketScoreController,
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          builderState(() {
+                            if (redpackType == 'average') {
+                              _redPacketTotalScore =
+                                  (int.parse(value) * (int.parse(_redPacketCountController.text))).toString();
+                            } else {
+                              _redPacketTotalScore = value;
+                            }
+                          });
+                        },
+                      ),
                     ),
                   )
                 ],
               ),
+              const SizedBox(height: 5),
               Row(
                 children: [
-                  const Text('个数:'),
+                  const Text(
+                    '个数:',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   SizedBox(
                     width: 80,
-                    child: TextField(
-                      controller: _redPacketCountController,
-                      enabled: redpackType != 'rockPaperScissors',
+                    child: Container(
+                      height: 30,
+                      alignment: Alignment.center,
+                      child: IWPZTextField(
+                        contentPaddingValue: 5,
+                        borderRadius: BorderRadius.circular(4),
+                        backgroundColor: const Color.fromARGB(102, 248, 115, 115),
+                        style: const TextStyle(color: Colors.white),
+                        controller: _redPacketCountController,
+                        enabled: redpackType != 'rockPaperScissors',
+                      ),
                     ),
                   )
                 ],
               ),
+              const SizedBox(height: 5),
               Row(
                 children: [
-                  const Text('留言:'),
+                  const Text(
+                    '留言:',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   Expanded(
-                    child: TextField(
-                      controller: _redPacketMessageController,
+                    child: Container(
+                      height: 30,
+                      alignment: Alignment.center,
+                      child: IWPZTextField(
+                        contentPaddingValue: 5,
+                        borderRadius: BorderRadius.circular(4),
+                        backgroundColor: const Color.fromARGB(102, 248, 115, 115),
+                        style: const TextStyle(color: Colors.white),
+                        controller: _redPacketMessageController,
+                      ),
                     ),
                   ),
                 ],
               ),
-              Text('总计：$_redPacketTotalScore'),
+              Text(
+                '总计：$_redPacketTotalScore',
+                style: const TextStyle(color: Colors.white),
+              ),
             ],
           );
         },
@@ -337,7 +417,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
   void _onFaceSelect() async {
     var res = await Api.getFacePack();
-    print(res);
   }
 
   void _onImageSelect() async {
@@ -438,6 +517,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                       _textInputController.text += '@${message.metadata!['userName']} ';
                       _textInputNode.requestFocus();
                     },
+                    onTap: () async {
+                      var res = await Api.getOtherUserInfo(message.metadata!['userName']);
+                      print(res);
+                      NavigatorTool.push(context, page: UserProfilePage(userProfile: res));
+                      // if (res['code'] == 0) {}
+                    },
                     child: Container(
                       height: 30,
                       width: 30,
@@ -477,8 +562,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   padding: const EdgeInsets.only(left: 10),
                   decoration: BoxDecoration(
                     color: message.metadata!['userName'] == DataManager.myInfo['userName']
-                        ? Colors.blue[100]
-                        : Colors.grey[200],
+                        ? isMessage
+                            ? Colors.blue[100]
+                            : Colors.white
+                        : isMessage
+                            ? Colors.grey[200]
+                            : Colors.white,
                     borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20),
@@ -490,45 +579,77 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                       Container(
                         height: 40,
                         margin: const EdgeInsets.only(top: 10),
-                        child: Wrap(
-                          direction: Axis.horizontal,
-                          alignment: WrapAlignment.start,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          spacing: 5,
-                          children: [
-                            Text(message.metadata!['userNickname'].isEmpty
-                                ? message.metadata!['userName']
-                                : '${message.metadata!['userNickname']} (${message.metadata!['userName']})'),
-                            ...metals['list'] == null
-                                ? []
-                                : List.generate(metals['list'].length, (index) {
-                                    if (metals['list'][index]['enabled'] == true) {
-                                      return MedalWidget(medal: metals['list'][index]);
-                                    }
-                                    return Container();
-                                  }),
-                          ],
-                        ),
+                        child: message.metadata!['userName'] == DataManager.myInfo['userName']
+                            ? Wrap(
+                                direction: Axis.horizontal,
+                                alignment: WrapAlignment.end,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 5,
+                                children: [
+                                  ...metals['list'] == null
+                                      ? []
+                                      : List.generate(metals['list'].length, (index) {
+                                          if (metals['list'][index]['enabled'] == true) {
+                                            return MedalIcon(medal: metals['list'][index]);
+                                          }
+                                          return Container();
+                                        }),
+                                  Text(message.metadata!['userNickname'].isEmpty
+                                      ? message.metadata!['userName']
+                                      : '${message.metadata!['userNickname']} (${message.metadata!['userName']})'),
+                                ],
+                              )
+                            : Wrap(
+                                direction: Axis.horizontal,
+                                alignment: WrapAlignment.start,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 5,
+                                children: [
+                                  Text(message.metadata!['userNickname'].isEmpty
+                                      ? message.metadata!['userName']
+                                      : '${message.metadata!['userNickname']} (${message.metadata!['userName']})'),
+                                  ...metals['list'] == null
+                                      ? []
+                                      : List.generate(metals['list'].length, (index) {
+                                          if (metals['list'][index]['enabled'] == true) {
+                                            return MedalIcon(medal: metals['list'][index]);
+                                          }
+                                          return Container();
+                                        }),
+                                ],
+                              ),
                       ),
                       isMessage
-                          ? Html(
-                              data: message.metadata!['content'],
-                              onImageTap:
-                                  (String? url, RenderContext rContext, Map<String, String> attributes, element) {
-                                ImageViewer.showImageSlider(
-                                  images: [
-                                    url!,
-                                  ],
-                                );
-                              },
-                            )
+                          ? message.metadata!['content'].toString().contains('<iframe')
+                              ? Container(
+                                  constraints: const BoxConstraints(
+                                    maxHeight: 100,
+                                    maxWidth: 150,
+                                  ),
+                                  child: Expanded(
+                                    child: InAppWebView(
+                                      initialData: InAppWebViewInitialData(data: message.metadata!['content']),
+                                    ),
+                                  ),
+                                ) //webview
+                              : Html(
+                                  data: message.metadata!['content'],
+                                  onImageTap:
+                                      (String? url, RenderContext rContext, Map<String, String> attributes, element) {
+                                    ImageViewer.showImageSlider(
+                                      images: [
+                                        url!,
+                                      ],
+                                    );
+                                  },
+                                )
                           : GestureDetector(
                               onTap: () async {
                                 var res = await Api.openRedPack(message.id);
                                 RedpackDialog.show(context, redPack: res);
                               },
                               child: Container(
-                                height: redPack['type'] == 'rockPaperScissors' ? 100 : 70,
+                                height: redPack['type'] == 'rockPaperScissors' ? 110 : 70,
                                 margin: const EdgeInsets.only(left: 0, right: 10, top: 0, bottom: 20),
                                 padding: const EdgeInsets.only(left: 5, right: 5, top: 5),
                                 width: double.infinity,
@@ -541,23 +662,37 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(redPack['msg']),
-                                    Text(redPack['type'] == 'rockPaperScissors'
-                                        ? '石头剪刀布红包'
-                                        : redPack['type'] == 'random'
-                                            ? '拼手气红包'
-                                            : redPack['type'] == 'average'
-                                                ? '普通红包'
-                                                : redPack['type'] == 'specify'
-                                                    ? '专属红包'
-                                                    : redPack['type'] == 'heartbeat'
-                                                        ? '心跳红包'
-                                                        : '未知红包???'),
-                                    Text('${redPack['got']}/${redPack['count']}' +
-                                        (redPack['count'] == redPack['got'] ? '红包被抢光啦！' : '')),
+                                    Text(
+                                      redPack['msg'],
+                                      style: const TextStyle(color: Colors.white, fontSize: 14),
+                                    ),
+                                    const Divider(
+                                      height: 0.5,
+                                      endIndent: 20,
+                                      color: Color(0xFFCECECE),
+                                    ),
+                                    Text(
+                                      redPack['type'] == 'rockPaperScissors'
+                                          ? '石头剪刀布红包'
+                                          : redPack['type'] == 'random'
+                                              ? '拼手气红包'
+                                              : redPack['type'] == 'average'
+                                                  ? '普通红包'
+                                                  : redPack['type'] == 'specify'
+                                                      ? '专属红包'
+                                                      : redPack['type'] == 'heartbeat'
+                                                          ? '心跳红包'
+                                                          : '未知红包???',
+                                      style: const TextStyle(color: Colors.white, fontSize: 12),
+                                    ),
+                                    Text(
+                                      '${redPack['got']}/${redPack['count']}' +
+                                          (redPack['count'] == redPack['got'] ? '红包被抢光啦！' : ''),
+                                      style: const TextStyle(color: Colors.white, fontSize: 12),
+                                    ),
                                     redPack['type'] == 'rockPaperScissors'
                                         ? Container(
-                                            margin: const EdgeInsets.only(top: 5),
+                                            margin: const EdgeInsets.only(top: 2, bottom: 5),
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
@@ -566,7 +701,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                                     var res = await Api.openRedPack(message.id, gesture: 0);
                                                     RedpackDialog.show(context, redPack: res);
                                                   },
-                                                  child: const Icon(Icons.handshake),
+                                                  child: Image.asset('assets/images/rock.png', height: 32, width: 32),
                                                 ),
                                                 const SizedBox(width: 20),
                                                 GestureDetector(
@@ -574,7 +709,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                                     var res = await Api.openRedPack(message.id, gesture: 1);
                                                     RedpackDialog.show(context, redPack: res);
                                                   },
-                                                  child: const Icon(Icons.content_cut),
+                                                  child: Image.asset('assets/images/knife.png', height: 32, width: 32),
                                                 ),
                                                 const SizedBox(width: 20),
                                                 GestureDetector(
@@ -582,7 +717,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                                     var res = await Api.openRedPack(message.id, gesture: 2);
                                                     RedpackDialog.show(context, redPack: res);
                                                   },
-                                                  child: const Icon(Icons.back_hand),
+                                                  child: Image.asset('assets/images/rul.png', height: 32, width: 32),
                                                 ),
                                               ],
                                             ),
@@ -659,124 +794,142 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         showBack: true,
         rightTitle: '在线人数：$onlineCount',
       ),
-      child: Chat(
-          l10n: const ChatL10nZhCN(),
-          messages: messageList,
-          onMessageTap: _handleMessageTap,
-          onPreviewDataFetched: _handlePreviewDataFetched,
-          onSendPressed: _handleSendPressed,
-          user: _user,
-          customBottomWidget: Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0xFFCECECE),
-                  offset: Offset(0, -1),
-                  spreadRadius: 1,
-                  blurRadius: 3,
-                ),
-              ],
-            ),
-            height: 100,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: 40,
-                  margin: const EdgeInsets.only(left: 10),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: _onImageSelect,
-                        child: const Icon(Icons.image),
-                      ),
-                      const SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: _onFaceSelect,
-                        child: const Icon(Icons.emoji_emotions),
-                      ),
-                      const SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: _onRedPackSelect,
-                        child: const Icon(Icons.money),
-                      ),
-                      // Expanded(child: Container()),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            const SizedBox(
-                              width: 60,
-                              child: Text(
-                                '当前话题：',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  _textInputController.text =
-                                      _textInputController.text + ' `# $currentDiscussing #` \n';
-                                },
-                                child: AutoSizeText(
-                                  '#$currentDiscussing#',
-                                  minFontSize: 10,
-                                  maxLines: 1,
-                                  style: const TextStyle(fontSize: 14, color: Color(0xFF569e3d)),
+      child: SafeArea(
+        child: Chat(
+            l10n: const ChatL10nZhCN(),
+            messages: messageList,
+            onMessageTap: _handleMessageTap,
+            onPreviewDataFetched: _handlePreviewDataFetched,
+            onSendPressed: _handleSendPressed,
+            user: _user,
+            customBottomWidget: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0xFFCECECE),
+                    offset: Offset(0, -1),
+                    spreadRadius: 1,
+                    blurRadius: 3,
+                  ),
+                ],
+              ),
+              height: 100,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 40,
+                    margin: const EdgeInsets.only(left: 10),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: _onImageSelect,
+                          child: const Icon(Icons.image),
+                        ),
+                        // const SizedBox(width: 10),
+                        // GestureDetector(
+                        //   onTap: _onFaceSelect,
+                        //   child: const Icon(Icons.emoji_emotions),
+                        // ),
+                        const SizedBox(width: 10),
+                        GestureDetector(
+                          onTap: _onRedPackSelect,
+                          child: Image.asset('assets/images/redpacket_icon.png', height: 36, width: 36),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              const SizedBox(
+                                width: 60,
+                                child: Text(
+                                  '当前话题：',
+                                  style: TextStyle(fontSize: 12),
                                 ),
                               ),
-                            ),
-                          ],
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    _textInputController.text =
+                                        _textInputController.text + ' `# $currentDiscussing #` \n';
+                                  },
+                                  child: AutoSizeText(
+                                    '#$currentDiscussing#',
+                                    minFontSize: 10,
+                                    maxLines: 1,
+                                    style: const TextStyle(fontSize: 14, color: Color(0xFF569e3d)),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 50),
-                      FocusScope.of(context).hasFocus
-                          ? GestureDetector(
-                              onTap: () {
-                                FocusScope.of(context).unfocus();
-                              },
-                              child: const Icon(Icons.keyboard_arrow_down_rounded),
-                            )
-                          : Container(),
-                      const SizedBox(width: 10),
-                    ],
+                        const SizedBox(width: 50),
+                        FocusScope.of(context).hasFocus
+                            ? GestureDetector(
+                                onTap: () {
+                                  FocusScope.of(context).unfocus();
+                                },
+                                child: const Icon(Icons.keyboard_arrow_down_rounded),
+                              )
+                            : Container(),
+                        const SizedBox(width: 10),
+                      ],
+                    ),
                   ),
-                ),
-                const Divider(
-                  height: 0.5,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _textInputController,
-                        focusNode: _textInputNode,
-                      ),
+                  const Divider(
+                    height: 0.5,
+                  ),
+                  Expanded(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: SizedBox(
+                            height: 30,
+                            child: IWPZTextField(
+                              controller: _textInputController,
+                              focusNode: _textInputNode,
+                              borderRadius: BorderRadius.circular(4),
+                              contentPaddingValue: 6,
+                              backgroundColor: const Color(0xFFEEEEEE),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        GestureDetector(
+                          onTap: () async {
+                            if (_textInputController.text.isEmpty) {
+                            } else {
+                              _sendMessageReq(_textInputController.text);
+                            }
+                          },
+                          child: Container(
+                            width: 40,
+                            height: 30,
+                            margin: const EdgeInsets.only(top: 10),
+                            child: const Text('发送'),
+                          ),
+                        ),
+                      ],
                     ),
-                    GestureDetector(
-                      onTap: () async {
-                        _sendMessageReq(_textInputController.text);
-                      },
-                      child: const SizedBox(
-                        width: 40,
-                        child: Text('发送'),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          customMessageBuilder: (types.CustomMessage message, {int messageWidth = 10}) {
-            String type = message.metadata!['type'];
-            if (type == 'msg') {
-              return _getMessageWidget(message);
-            } else if (type == 'redPacketStatus') {
-              return _getRedPackgetMessageWidget(message);
-            }
-            return Container();
-          }),
+            customMessageBuilder: (types.CustomMessage message, {int messageWidth = 10}) {
+              String type = message.metadata!['type'];
+              if (type == 'msg') {
+                return _getMessageWidget(message);
+              } else if (type == 'redPacketStatus') {
+                return _getRedPackgetMessageWidget(message);
+              }
+              return Container();
+            }),
+      ),
     );
   }
 }

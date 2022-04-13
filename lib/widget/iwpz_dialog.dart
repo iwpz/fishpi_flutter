@@ -5,6 +5,7 @@ class IWPZDialog {
   static void show(
     BuildContext context, {
     String title = '', //标题
+    Color titleColor = Colors.black,
     String content = '', //正文，如果有contentWidget，则无视
     Widget? contentWidget, //正文widget
     bool showCancelWidget = false,
@@ -15,6 +16,7 @@ class IWPZDialog {
     double height = 220, //宽度
     double width = 400, //高度
     Color backgroundColor = Colors.white,
+    Color okColor = Colors.black,
     Function? onOKTap, //onOK
     Function? onCancelTap, //onCancel
   }) {
@@ -38,7 +40,7 @@ class IWPZDialog {
                       borderRadius: BorderRadius.circular(20),
                       color: backgroundColor,
                     ),
-                    padding: EdgeInsets.only(top: 32, left: 30, right: 30),
+                    padding: const EdgeInsets.only(top: 32, left: 30, right: 30),
                     height: height,
                     width: width,
                     child: Column(
@@ -47,12 +49,13 @@ class IWPZDialog {
                         title.isEmpty
                             ? Container()
                             : Container(
-                                margin: EdgeInsets.only(bottom: 20),
+                                margin: const EdgeInsets.only(bottom: 20),
                                 child: Text(
                                   title,
                                   style: TextStyle(
                                     fontSize: 22,
                                     fontWeight: FontWeight.w400,
+                                    color: titleColor,
                                   ),
                                 ),
                               ),
@@ -127,7 +130,7 @@ class IWPZDialog {
                                       '确定',
                                       style: TextStyle(
                                         fontSize: 19,
-                                        color: Color(0xFF0C66FF),
+                                        color: okColor,
                                       ),
                                     ),
                                   ),

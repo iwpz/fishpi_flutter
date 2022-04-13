@@ -9,15 +9,17 @@ class ChatListItem extends StatefulWidget {
   final String? avatar;
   final String time;
   final Function? onTap;
-  const ChatListItem(
-      {Key? key,
-      required this.title,
-      required this.messageId,
-      required this.content,
-      required this.time,
-      this.avatar,
-      this.onTap})
-      : super(key: key);
+  final String? md;
+  const ChatListItem({
+    Key? key,
+    required this.title,
+    required this.messageId,
+    required this.content,
+    required this.time,
+    this.avatar,
+    this.onTap,
+    this.md,
+  }) : super(key: key);
 
   @override
   State<ChatListItem> createState() => _ChatListItemState();
@@ -73,12 +75,16 @@ class _ChatListItemState extends State<ChatListItem> {
                     // SizedBox(height: 5),
                     Expanded(
                       child: Container(
-                        // color: Colors.grey,
-                        // child: Text(widget.content.toString()),
-                        child: Html(
-                          key: Key(widget.messageId),
-                          data: widget.content.toString(),
-                        ),
+                        child: widget.content.startsWith('{')
+                            ? const Text('[红包]')
+                            : widget.content.contains('<img')
+                                ? const Text('[图片]')
+                                : widget.content.contains('<iframe')
+                                    ? const Text('[功能]')
+                                    : Html(
+                                        key: Key(widget.messageId),
+                                        data: widget.content.toString(),
+                                      ),
                       ),
                     ),
                   ],

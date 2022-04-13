@@ -20,6 +20,10 @@ class Api {
     return RequestManager.get('/api/user');
   }
 
+  static getOtherUserInfo(String userName) {
+    return RequestManager.get('/user/$userName');
+  }
+
   static sendMessage(String message) {
     var data = {'content': message};
     return RequestManager.post('/chat-room/send', data: data);

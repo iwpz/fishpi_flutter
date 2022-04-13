@@ -1,22 +1,21 @@
 import 'dart:convert';
 
 import 'package:fishpi_flutter/api/api.dart';
-import 'package:fishpi_flutter/manager/data_manager.dart';
 import 'package:fishpi_flutter/style/global_style.dart';
 import 'package:fishpi_flutter/widget/base_app_bar.dart';
 import 'package:fishpi_flutter/widget/base_page.dart';
-import 'package:fishpi_flutter/widget/medal_icon.dart';
 import 'package:fishpi_flutter/widget/medal_widget.dart';
 import 'package:flutter/material.dart';
 
-class MinePage extends StatefulWidget {
-  MinePage({Key? key}) : super(key: key);
+class UserProfilePage extends StatefulWidget {
+  final userProfile;
+  UserProfilePage({Key? key, required this.userProfile}) : super(key: key);
 
   @override
-  State<MinePage> createState() => _MinePageState();
+  State<UserProfilePage> createState() => _UserProfilePageState();
 }
 
-class _MinePageState extends State<MinePage> {
+class _UserProfilePageState extends State<UserProfilePage> {
   String title = '';
   String content = '';
   List medalList = [];
@@ -27,36 +26,19 @@ class _MinePageState extends State<MinePage> {
     super.initState();
   }
 
-  void _getUserInfo() async {
-    var res = await Api.getUserInfo();
-    if (res['code'] == 0) {
-      setState(() {
-        DataManager.myInfo = res['data'];
-        /*
-        {"msg":"","code":0,"data":
-        {"userCity":"大连","userOnlineFlag":true,"userPoint":8971,"userAppRole":"0","userIntro":"","userNo":"1809",
-        "onlineMinute":57597,"userAvatarURL":"https://pwl.stackoverflow.wiki/2021/12/blob-0b83b50c.png",
-        "userNickname":"和平哥","oId":"1637917131504","userName":"iwpz","cardBg":"","followingUserCount":0,"sysMetal":
-        "{\"list\":[{\"data\":\"\",\"name\":\"摸鱼派粉丝\",\"description\":\"捐助摸鱼派达16RMB\",\"attr\":\"url=https://pwl.stackoverflow.wiki/2021/12/ht1-d8149de4.jpg&backcolor=ffffff&
-flutter: fontcolor=ff3030\",\"enabled\":true},{\"data\":\"\",\"name\":\"开发\",\"description\":\"摸鱼派官方开发组成员\",\"attr\":\"url=https://pwl.stackoverflow.wiki/2021/12/metaldev-db507262.png&backcolor=483d8b&fontcolor=f8f8ff\",\"enabled\":true},{\"data\":\"\",\"name\":\"纪律委员\",\"description\":\"摸鱼派管理组成员\",\"attr\":\"url=https://pwl.stackoverflow.wiki/2021/12/011shield-46ce360b.jpg&backcolor=2568ff&fontcolor=ffffff\",\"enabled\":true}]}",
-"userRole":"纪律委员","followerCount":0,"userURL":""}}
-         */
-        print('check data:');
-        print(DataManager.myInfo);
-        medalList = json.decode(DataManager.myInfo['sysMetal'].toString())['list'];
-      });
-      setState(() {
-        title = DataManager.myInfo['userNickname'];
-      });
-    }
+  void _getUserInfo() {
+    setState(() {
+      medalList = json.decode(widget.userProfile['sysMetal'].toString())['list'];
+      title = widget.userProfile['userNickname'];
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return BasePage(
       appBar: BaseAppBar(
-        title: DataManager.myInfo['userNickname'],
-        showBack: false,
+        title: widget.userProfile['userNickname'],
+        showBack: true,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,7 +49,7 @@ flutter: fontcolor=ff3030\",\"enabled\":true},{\"data\":\"\",\"name\":\"开发\"
             height: MediaQuery.of(context).size.width / 2,
             decoration: BoxDecoration(
               // color: Colors.white,
-              image: DecorationImage(image: NetworkImage(DataManager.myInfo['cardBg']), fit: BoxFit.fill),
+              image: DecorationImage(image: NetworkImage(widget.userProfile['cardBg']), fit: BoxFit.fill),
               boxShadow: [
                 GlobalStyle.bottomShadow,
               ],
@@ -105,19 +87,19 @@ flutter: fontcolor=ff3030\",\"enabled\":true},{\"data\":\"\",\"name\":\"开发\"
                           SizedBox(
                             height: 80,
                             width: 80,
-                            child: Image.network(DataManager.myInfo['userAvatarURL']),
+                            child: Image.network(widget.userProfile['userAvatarURL']),
                           ),
                           const SizedBox(height: 10),
                           Row(
                             children: [
-                              DataManager.myInfo['userRole'] == '纪律委员'
+                              widget.userProfile['userRole'] == '纪律委员'
                                   ? Container(
                                       height: 20,
                                       width: 64,
                                       // margin: const EdgeInsets.only(top: 10),
                                       child: Image.network('https://pwl.stackoverflow.wiki/policeRole.png'),
                                     )
-                                  : DataManager.myInfo['userRole'] == '管理员'
+                                  : widget.userProfile['userRole'] == '管理员'
                                       ? Container(
                                           height: 20,
                                           width: 64,
@@ -144,12 +126,12 @@ flutter: fontcolor=ff3030\",\"enabled\":true},{\"data\":\"\",\"name\":\"开发\"
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                      DataManager.myInfo['userNickname'],
+                                      widget.userProfile['userNickname'],
                                       style: const TextStyle(fontSize: 20),
                                     ),
                                     const SizedBox(width: 5),
                                     Text(
-                                      DataManager.myInfo['userName'],
+                                      widget.userProfile['userName'],
                                       style: const TextStyle(fontSize: 14, color: Color.fromARGB(138, 00, 00, 0)),
                                     ),
                                     // const SizedBox(height: 10),
@@ -162,8 +144,8 @@ flutter: fontcolor=ff3030\",\"enabled\":true},{\"data\":\"\",\"name\":\"开发\"
                               margin: const EdgeInsets.only(top: 10, left: 10),
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                '''摸鱼派 ${DataManager.myInfo['userNo']} 号成员, ${DataManager.myInfo['userAppRole'] == 0 ? '黑客' : '画家'} 积分 ${DataManager.myInfo['userPoint']}
-在线时间：${DataManager.myInfo['onlineMinute']}分钟   位置：${DataManager.myInfo['userCity']}
+                                '''摸鱼派 ${widget.userProfile['userNo']} 号成员, ${widget.userProfile['userAppRole'] == 0 ? '黑客' : '画家'} 积分 ${widget.userProfile['userPoint']}
+在线时间：${widget.userProfile['onlineMinute']}分钟   位置：${widget.userProfile['userCity']}
                             ''',
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
