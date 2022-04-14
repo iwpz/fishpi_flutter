@@ -98,6 +98,7 @@ class RequestManager {
       });
       path = path.substring(0, path.length - 1);
     }
+
     _options.contentType = contentType;
     print('🚀🚀🚀==========================================================================');
     print('request:');

@@ -28,7 +28,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   void _getUserInfo() {
     setState(() {
-      medalList = json.decode(widget.userProfile['sysMetal'].toString())['list'];
+      try {
+        medalList = json.decode(widget.userProfile['sysMetal'].toString())['list'];
+      } catch (ex) {
+        medalList = [];
+      }
       title = widget.userProfile['userNickname'];
     });
   }

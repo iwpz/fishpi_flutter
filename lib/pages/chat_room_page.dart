@@ -132,7 +132,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             children: [
               Row(
                 children: [
-                  // random(拼手气红包), average(平分红包)，specify(专属红包)，heartbeat(心跳红包)
+                  // random(拼手气红包), average(平分红包)，specify(专属红包)，heartbeat(心跳红包)，dice(骰子红包)
                   const Text(
                     '拼:',
                     style: TextStyle(color: Colors.white),
@@ -205,16 +205,34 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                     style: TextStyle(color: Colors.white),
                   ),
                   Radio(
-                      activeColor: Colors.white,
-                      groupValue: redpackType,
-                      value: 'rockPaperScissors',
-                      onChanged: (String? value) {
-                        builderState(() {
-                          redpackType = value!;
-                          _redPacketCountController.text = '1';
-                          _redPacketMessageController.text = '石头剪刀布！';
-                        });
-                      }),
+                    activeColor: Colors.white,
+                    groupValue: redpackType,
+                    value: 'rockPaperScissors',
+                    onChanged: (String? value) {
+                      builderState(() {
+                        redpackType = value!;
+                        _redPacketCountController.text = '1';
+                        _redPacketMessageController.text = '石头剪刀布！';
+                      });
+                    },
+                  ),
+                  // const Text(
+                  //   '骰:',
+                  //   style: TextStyle(color: Colors.white),
+                  // ),
+                  // Radio(
+                  //   activeColor: Colors.white,
+                  //   groupValue: redpackType,
+                  //   value: 'dice',
+                  //   onChanged: (String? value) {
+                  //     builderState(() {
+                  //       redpackType = value!;
+                  //       _redPacketCountController.text = '3';
+                  //       _redPacketMessageController.text = '买定离手！';
+                  //     });
+                  //   },
+                  // ),
+                  //dice
                 ],
               ),
               //specify
@@ -620,29 +638,31 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                               ),
                       ),
                       isMessage
-                          ? message.metadata!['content'].toString().contains('<iframe')
-                              ? Container(
-                                  constraints: const BoxConstraints(
-                                    maxHeight: 100,
-                                    maxWidth: 150,
-                                  ),
-                                  child: Expanded(
-                                    child: InAppWebView(
-                                      initialData: InAppWebViewInitialData(data: message.metadata!['content']),
-                                    ),
-                                  ),
-                                ) //webview
-                              : Html(
-                                  data: message.metadata!['content'],
-                                  onImageTap:
-                                      (String? url, RenderContext rContext, Map<String, String> attributes, element) {
-                                    ImageViewer.showImageSlider(
-                                      images: [
-                                        url!,
-                                      ],
-                                    );
-                                  },
-                                )
+                          ?
+                          // message.metadata!['content'].toString().contains('<iframe')
+                          //     ? Container(
+                          //         constraints: const BoxConstraints(
+                          //           maxHeight: 100,
+                          //           maxWidth: 150,
+                          //         ),
+                          //         child: Expanded(
+                          //           child: InAppWebView(
+                          //             initialData: InAppWebViewInitialData(data: message.metadata!['content']),
+                          //           ),
+                          //         ),
+                          //       ) //webview
+                          //     :
+                          Html(
+                              data: message.metadata!['content'],
+                              onImageTap:
+                                  (String? url, RenderContext rContext, Map<String, String> attributes, element) {
+                                ImageViewer.showImageSlider(
+                                  images: [
+                                    url!,
+                                  ],
+                                );
+                              },
+                            )
                           : GestureDetector(
                               onTap: () async {
                                 var res = await Api.openRedPack(message.id);
