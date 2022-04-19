@@ -24,6 +24,7 @@ class _ChatListPageState extends State<ChatListPage> with AutomaticKeepAliveClie
                   avatar: latestMessage['userAvatarURL']
    */
   var latestMessage = null;
+  
   @override
   void initState() {
     _getHistoryMessage();

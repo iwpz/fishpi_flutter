@@ -48,7 +48,6 @@ class Api {
       "msg": msg,
     };
     if (type == 'specify' && recivers != null && recivers.isNotEmpty) {
-      print(recivers);
       redpackData['recivers'] = recivers;
     }
     if (gesture != -1) {
@@ -100,5 +99,29 @@ class Api {
   static sendWindMoon(String content) {
     var data = {'breezemoonContent': content};
     return RequestManager.post('/breezemoon', data: data);
+  }
+
+  static getRecentPosts({int page = 1}) {
+    Map<String, dynamic> params = {'p': page};
+    return RequestManager.get('/api/articles/recent', params: params);
+  }
+
+  static getHotPosts({int page = 1}) {
+    Map<String, dynamic> params = {'p': page};
+    return RequestManager.get('/api/articles/recent/hot', params: params);
+  }
+
+  static getGoodPosts({int page = 1}) {
+    Map<String, dynamic> params = {'p': page};
+    return RequestManager.get('/api/articles/recent/good', params: params);
+  }
+
+  static getRecentReplyPosts({int page = 1}) {
+    Map<String, dynamic> params = {'p': page};
+    return RequestManager.get('/api/articles/recent/reply', params: params);
+  }
+
+  static getPostInfo(String oId) {
+    return RequestManager.get('/api/article/$oId');
   }
 }

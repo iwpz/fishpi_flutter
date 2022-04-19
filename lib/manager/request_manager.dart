@@ -71,7 +71,11 @@ class RequestManager {
   static Dio _dio = Dio(_options);
 
   static Future<T> _request<T>(String path,
-      {required String method, Map? params, data, CancelToken? cancelToken, String contentType = ''}) async {
+      {required String method,
+      Map<String, dynamic>? params,
+      data,
+      CancelToken? cancelToken,
+      String contentType = ''}) async {
     if (method == 'post' || method == 'delete' || method == 'put') {
       if (apiKey.isNotEmpty && !path.contains('upload')) {
         if (data != null) {
@@ -83,6 +87,8 @@ class RequestManager {
       longPrint('data:$data');
     } else {
       if (apiKey.isNotEmpty && !path.contains('upload')) {
+        print(apiKey);
+        print(params);
         if (params != null) {
           params['apiKey'] = apiKey;
         } else {
@@ -240,30 +246,30 @@ class RequestManager {
     return message;
   }
 
-  static Future<T> get<T>(String path, {Map? params, CancelToken? cancelToken}) {
+  static Future<T> get<T>(String path, {Map<String, dynamic>? params, CancelToken? cancelToken}) {
     return _request(path, method: 'get', params: params, cancelToken: cancelToken);
   }
 
   static Future<T> post<T>(String path,
-      {Map? params, data, CancelToken? cancelToken, String contentType = 'application/json'}) {
+      {Map<String, dynamic>? params, data, CancelToken? cancelToken, String contentType = 'application/json'}) {
     return _request(path,
         method: 'post', params: params, data: data, cancelToken: cancelToken, contentType: contentType);
   }
 
   static Future<T> patch<T>(String path,
-      {Map? params, data, CancelToken? cancelToken, String contentType = 'application/json'}) {
+      {Map<String, dynamic>? params, data, CancelToken? cancelToken, String contentType = 'application/json'}) {
     return _request(path,
         method: 'patch', params: params, data: data, cancelToken: cancelToken, contentType: contentType);
   }
 
   static Future<T> put<T>(String path,
-      {Map? params, data, CancelToken? cancelToken, String contentType = 'application/json'}) {
+      {Map<String, dynamic>? params, data, CancelToken? cancelToken, String contentType = 'application/json'}) {
     return _request(path,
         method: 'put', params: params, data: data, cancelToken: cancelToken, contentType: contentType);
   }
 
   static Future<T> delete<T>(String path,
-      {Map? params, data, CancelToken? cancelToken, String contentType = 'application/json'}) {
+      {Map<String, dynamic>? params, data, CancelToken? cancelToken, String contentType = 'application/json'}) {
     return _request(path,
         method: 'delete', params: params, data: data, cancelToken: cancelToken, contentType: contentType);
   }

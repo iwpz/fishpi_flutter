@@ -9,7 +9,7 @@ class BaseAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Widget? rightWidget;
   final String? rightTitle;
   final Function? onRightTap;
-  BaseAppBar({
+  const BaseAppBar({
     Key? key,
     this.title,
     this.isModal = false,
@@ -39,20 +39,18 @@ class _BaseAppBarState extends State<BaseAppBar> {
               },
               child: widget.isModal == true
                   ? Container(
-                      margin: EdgeInsets.only(left: 20, top: 20),
-                      child: Text('取消', style: TextStyle(fontSize: 16, color: Colors.white)),
+                      margin: const EdgeInsets.only(left: 20, top: 20),
+                      child: const Text('取消', style: TextStyle(fontSize: 16, color: Colors.white)),
                     )
-                  : Container(
-                      child: Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                      ),
-                    ),
+                  : const Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                  ),
             )
           : Container(),
       title: Text(
         widget.title == null ? '' : widget.title!,
-        style: TextStyle(color: Colors.white, fontSize: 17),
+        style: const TextStyle(color: Colors.white, fontSize: 17),
       ),
       actions: [
         widget.rightTitle != null
@@ -63,10 +61,10 @@ class _BaseAppBarState extends State<BaseAppBar> {
                   }
                 },
                 child: Container(
-                  padding: EdgeInsets.only(right: 20, top: 20),
+                  padding: const EdgeInsets.only(right: 20, top: 20),
                   child: Text(
                     widget.rightTitle!,
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: const TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ),
               )
