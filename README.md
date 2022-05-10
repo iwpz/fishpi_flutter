@@ -1,3 +1,20 @@
-# fishpi_flutter
+# 摸鱼派 Flutter 客户端
 
-Fishpi Flutter Project.
+iOS & Android
+
+本项目基本不存在UI设计。
+并且代码存在严重赶工痕迹，还没整理。
+
+已支持：  
+登录  
+聊天室  
+收发红包  
+清风明月  
+
+TODO:  
+注册  
+发帖  
+以及UI调整。
+
+
+稍完备点后会将iOS版本上架到App Store，如有神助，感激涕零。
