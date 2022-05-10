@@ -67,16 +67,16 @@ class IWPZDialog {
                               )
                             : content.isEmpty
                                 ? Container()
-                                : Container(
+                                : SizedBox(
                                     child: Text(
                                       content,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 19,
                                         color: Colors.white,
                                       ),
                                     ),
                                   ),
-                        Container(
+                        SizedBox(
                           height: 72,
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -95,7 +95,7 @@ class IWPZDialog {
                                         },
                                         child: Container(
                                           alignment: Alignment.center,
-                                          child: Text(
+                                          child: const Text(
                                             '取消',
                                             style: TextStyle(
                                               fontSize: 19,
@@ -112,7 +112,7 @@ class IWPZDialog {
                                   ? Container(
                                       width: 1,
                                       height: 30,
-                                      color: Color(0x4DFFFFFF),
+                                      color: const Color(0x4DFFFFFF),
                                     )
                                   : Container(),
                               Expanded(

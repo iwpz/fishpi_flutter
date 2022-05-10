@@ -4,10 +4,11 @@ import 'package:dio/dio.dart';
 import 'package:fishpi_flutter/manager/request_manager.dart';
 
 class Api {
-  static getKey({required String nameOrEmail, required String userPassword}) {
+  static getKey({required String nameOrEmail, required String userPassword, String? twoStepCode}) {
     var data = {
       'nameOrEmail': nameOrEmail,
       'userPassword': userPassword,
+      'mfaCode': twoStepCode,
     };
     return RequestManager.post('/api/getKey', data: data);
   }

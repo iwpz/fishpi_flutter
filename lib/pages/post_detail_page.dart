@@ -4,10 +4,9 @@ import 'package:fishpi_flutter/widget/base_app_bar.dart';
 import 'package:fishpi_flutter/widget/base_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class PostDetailPage extends StatefulWidget {
-  final item;
+  var item;
   PostDetailPage({Key? key, required this.item}) : super(key: key);
 
   @override
@@ -34,7 +33,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   @override
   Widget build(BuildContext context) {
     return BasePage(
-      appBar: BaseAppBar(
+      appBar: const BaseAppBar(
         title: '帖子内容',
       ),
       child: postInfo == null
@@ -62,7 +61,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         Expanded(child: Container()),
                         Container(
                           width: 100,
-                          margin: EdgeInsets.only(right: 10),
+                          margin: const EdgeInsets.only(right: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
@@ -91,8 +90,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     ),
                     Html(data: postInfo['articleContent']),
                     Container(
-                      margin: EdgeInsets.only(left: 20, bottom: 10, top: 30),
-                      child: Text('精选评论：'),
+                      margin: const EdgeInsets.only(left: 20, bottom: 10, top: 30),
+                      child: const Text('精选评论：'),
                     ),
                     Container(
                       margin: const EdgeInsets.only(left: 10, right: 10),
@@ -117,7 +116,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               Expanded(
                                   child: Column(
                                 children: [
-                                  Container(
+                                  SizedBox(
                                     height: 24,
                                     child: Row(
                                       children: [
@@ -125,7 +124,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                           '${commentItem['commenter']['userNickname']}',
                                           style: const TextStyle(fontSize: 14, color: Color(0xFF333333)),
                                         ),
-                                        SizedBox(width: 5),
+                                        const SizedBox(width: 5),
                                         Text(
                                           '${commentItem['commenter']['userName']}',
                                           style: const TextStyle(fontSize: 12, color: Color(0xFFAAAAAA)),
@@ -146,8 +145,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(left: 20, bottom: 10, top: 30),
-                      child: Text('评论：'),
+                      margin: const EdgeInsets.only(left: 20, bottom: 10, top: 30),
+                      child: const Text('评论：'),
                     ),
                     Container(
                       margin: const EdgeInsets.only(left: 10, right: 10),
@@ -173,7 +172,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               Expanded(
                                   child: Column(
                                 children: [
-                                  Container(
+                                  SizedBox(
                                     height: 24,
                                     child: Row(
                                       children: [
@@ -181,7 +180,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                           '${commentItem['commenter']['userNickname']}',
                                           style: const TextStyle(fontSize: 14, color: Color(0xFF333333)),
                                         ),
-                                        SizedBox(width: 5),
+                                        const SizedBox(width: 5),
                                         Text(
                                           '${commentItem['commenter']['userName']}',
                                           style: const TextStyle(fontSize: 12, color: Color(0xFFAAAAAA)),

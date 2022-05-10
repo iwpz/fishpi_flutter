@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class RecentPostListPage extends StatefulWidget {
-  RecentPostListPage({Key? key}) : super(key: key);
+  const RecentPostListPage({Key? key}) : super(key: key);
 
   @override
   State<RecentPostListPage> createState() => _RecentPostListPageState();
@@ -29,7 +29,7 @@ class _RecentPostListPageState extends State<RecentPostListPage> with AutomaticK
   }
 
   void _loadData(int page) async {
-    print('请求第$page页数据');
+    debugPrint('请求第$page页数据');
     var res = await Api.getRecentPosts(page: page);
     if (res['code'] == 0) {
       maxPage = res['data']['pagination']['paginationPageCount'];

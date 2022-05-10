@@ -9,29 +9,32 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key? key}) : super(key: key);
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController _userNameController = TextEditingController();
-  TextEditingController _pwdController = TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _pwdController = TextEditingController();
+  final TextEditingController _twoStepController = TextEditingController();
 
   void _loginAction() async {
     var res = await Api.getKey(
-        nameOrEmail: _userNameController.text,
-        userPassword: StringTool.getMd5(_pwdController.text));
-    print(res);
+      nameOrEmail: _userNameController.text,
+      userPassword: StringTool.getMd5(_pwdController.text),
+      twoStepCode:_twoStepController.text,
+    );
+    debugPrint(res);
     if (res['code'] == 0) {
       RequestManager.updateApiKey(res['Key']);
-      print('缓存ApiKey:${res['Key']}');
+      debugPrint('缓存ApiKey:${res['Key']}');
       SPTool().setStorage('ApiKey', res['Key']);
       var ress = await Api.getUserInfo();
       if (ress['code'] == 0) {
         DataManager.myInfo = ress['data'];
-        NavigatorTool.pushAndRemove(context, page: IndexPage());
+        NavigatorTool.pushAndRemove(context, page: const IndexPage());
       }
     } else {
       Fluttertoast.showToast(msg: res['msg']);
@@ -42,14 +45,14 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.only(left: 20, right: 20, top: 40),
+        margin: const EdgeInsets.only(left: 20, right: 20, top: 40),
         child: Column(
           children: [
-            Container(
+            SizedBox(
               height: 80,
               child: Row(
                 children: [
-                  Text('用户名:'),
+                  const Text('用户名:'),
                   Expanded(
                     child: TextField(
                       controller: _userNameController,
@@ -58,14 +61,27 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
-            Container(
+            SizedBox(
               height: 80,
               child: Row(
                 children: [
-                  Text('密码:'),
+                  const Text('密码:'),
                   Expanded(
                     child: TextField(
                       controller: _pwdController,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 80,
+              child: Row(
+                children: [
+                  const Text('两部认证码:'),
+                  Expanded(
+                    child: TextField(
+                      controller: _twoStepController,
                     ),
                   ),
                 ],
@@ -81,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                     _loginAction();
                   }
                 },
-                child: Text('登录')),
+                child: const Text('登录')),
           ],
         ),
       ),

@@ -9,7 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class WindMoonPage extends StatefulWidget {
-  WindMoonPage({Key? key}) : super(key: key);
+  const WindMoonPage({Key? key}) : super(key: key);
 
   @override
   State<WindMoonPage> createState() => _WindMoonPageState();
@@ -95,7 +95,10 @@ class _WindMoonPageState extends State<WindMoonPage> {
               },
             );
           },
-          child: const Icon(Icons.mode_edit_outlined),
+          child: Container(
+            margin: const EdgeInsets.only(right: 16),
+            child: const Icon(Icons.mode_edit_outlined),
+          ),
         ),
       ),
       child: IWPZTableView(

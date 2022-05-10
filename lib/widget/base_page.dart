@@ -7,7 +7,7 @@ class BasePage extends StatefulWidget {
   final PreferredSizeWidget? appBar;
   final Widget? bottomPanel;
   final Color? backgroundColor;
-  BasePage({Key? key, required this.child, this.appBar, this.bottomPanel, this.backgroundColor = Colors.white})
+  const BasePage({Key? key, required this.child, this.appBar, this.bottomPanel, this.backgroundColor = Colors.white})
       : super(key: key);
 
   @override

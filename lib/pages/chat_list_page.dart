@@ -9,7 +9,7 @@ import 'package:fishpi_flutter/widget/chat_list/chat_list_item.dart';
 import 'package:flutter/material.dart';
 
 class ChatListPage extends StatefulWidget {
-  ChatListPage({Key? key}) : super(key: key);
+  const ChatListPage({Key? key}) : super(key: key);
 
   @override
   State<ChatListPage> createState() => _ChatListPageState();
@@ -23,8 +23,8 @@ class _ChatListPageState extends State<ChatListPage> with AutomaticKeepAliveClie
                   time: latestMessage['time'].toString(),
                   avatar: latestMessage['userAvatarURL']
    */
-  var latestMessage = null;
-  
+  late var latestMessage;
+
   @override
   void initState() {
     _getHistoryMessage();
@@ -51,21 +51,21 @@ class _ChatListPageState extends State<ChatListPage> with AutomaticKeepAliveClie
       setState(() {
         if (messageList != null && messageList!.isNotEmpty) {
           latestMessage = messageList!.first;
-          print('最新消息：');
-          print(latestMessage['content']);
+          debugPrint('最新消息：');
+          debugPrint(latestMessage['content']);
         }
       });
     }
   }
 
   void _gotoChatRoom() {
-    NavigatorTool.push(context, page: ChatRoomPage());
+    NavigatorTool.push(context, page: const ChatRoomPage());
   }
 
   @override
   Widget build(BuildContext context) {
     return BasePage(
-      appBar: BaseAppBar(
+      appBar: const BaseAppBar(
         title: '聊天',
         showBack: false,
       ),

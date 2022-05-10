@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fishpi_flutter/config.dart';
 
@@ -10,7 +11,7 @@ class RequestManager {
   static String apiKey = '';
 
   factory RequestManager() => _sharedInstance();
-  static RequestManager _instance = RequestManager._();
+  static final RequestManager _instance = RequestManager._();
   RequestManager._();
 
   static setToken(String token) {
@@ -56,8 +57,8 @@ class RequestManager {
         }
       }),
     );
-    print('create dio with options');
-    print(_options.headers);
+    debugPrint('create dio with options');
+    debugPrint(_options.headers.toString());
   }
 
   static void updateApiKey(String key) {
@@ -87,8 +88,8 @@ class RequestManager {
       longPrint('data:$data');
     } else {
       if (apiKey.isNotEmpty && !path.contains('upload')) {
-        print(apiKey);
-        print(params);
+        debugPrint(apiKey);
+        debugPrint(params.toString());
         if (params != null) {
           params['apiKey'] = apiKey;
         } else {
@@ -106,27 +107,27 @@ class RequestManager {
     }
 
     _options.contentType = contentType;
-    print('🚀🚀🚀==========================================================================');
-    print('request:');
-    print(_options.baseUrl + path);
-    print('method:$method');
-    print('header:');
-    print(_options.headers);
-    print('🚀🚀🚀=================================================');
+    debugPrint('🚀🚀🚀==========================================================================');
+    debugPrint('request:');
+    debugPrint(_options.baseUrl + path);
+    debugPrint('method:$method');
+    debugPrint('header:');
+    debugPrint(_options.headers.toString());
+    debugPrint('🚀🚀🚀=================================================');
     try {
       Response response =
           await _dio.request(path, data: data, options: Options(method: method), cancelToken: cancelToken);
-      print('response url: ${_options.baseUrl + path}');
+      debugPrint('response url: ${_options.baseUrl + path}');
       if (method == 'post' || method == 'delete' || method == 'put') {
         longPrint('data:$data');
       } else {
         longPrint('param:$params');
       }
-      print('----------');
+      debugPrint('----------');
       longPrint(response.toString());
-      // print(response);
-      print('----------');
-      print('🚀🚀🚀==========================================================================');
+      // debugPrint(response);
+      debugPrint('----------');
+      debugPrint('🚀🚀🚀==========================================================================');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         try {
@@ -140,18 +141,11 @@ class RequestManager {
           }
           // }
         } catch (e) {
-          // LogUtil.error(e.toString());
-          // print(e);
           Fluttertoast.showToast(msg: '解析响应数据异常');
 
           return Future.error('解析响应数据异常');
         }
       } else if (response.statusCode == 401) {
-        // var loginRes = await MeetingApi.padLogin(params: {'sn': DataManager.sn});
-        // if (loginRes['code'] == 0) {
-        //   updateToken(loginRes['data']['access_token']);
-        // }
-        // return _request(path, method: method, data: data, params: params);
         return Future.error('401');
       } else {
         _handleHttpError(response.statusCode!);
@@ -159,9 +153,9 @@ class RequestManager {
         return Future.error('HTTP错误');
       }
     } on DioError catch (e) {
-      print('dio error:');
-      print(e.error);
-      print(e.message);
+      debugPrint('dio error:');
+      debugPrint(e.error);
+      debugPrint(e.message);
       // LogUtil.error(_dioError(e));
       return Future.error(e);
     } catch (e) {
@@ -176,11 +170,11 @@ class RequestManager {
     int maxStrLength = 500;
     //大于1000时
     while (msg.length > maxStrLength) {
-      print(msg.substring(0, maxStrLength));
+      debugPrint(msg.substring(0, maxStrLength));
       msg = msg.substring(maxStrLength);
     }
     //剩余部分
-    print(msg);
+    debugPrint(msg);
   }
 
   // 处理 Dio 异常

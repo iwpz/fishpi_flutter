@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class WindMoonItem extends StatefulWidget {
-  var data;
-  WindMoonItem({Key? key, required this.data}) : super(key: key);
+  final data;
+  const WindMoonItem({Key? key, required this.data}) : super(key: key);
 
   @override
   State<WindMoonItem> createState() => _WindMoonItemState();

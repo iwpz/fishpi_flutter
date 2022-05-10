@@ -12,13 +12,11 @@ import 'package:fishpi_flutter/widget/base_page.dart';
 import 'package:fishpi_flutter/widget/iwpz_dialog.dart';
 import 'package:fishpi_flutter/widget/iwpz_textfield.dart';
 import 'package:fishpi_flutter/widget/medal_icon.dart';
-import 'package:fishpi_flutter/widget/medal_widget.dart';
 import 'package:fishpi_flutter/widget/redpack_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_viewer/image_viewer.dart';
 import 'package:image_picker/image_picker.dart';
@@ -283,7 +281,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                     alignment: Alignment.center,
                                     child: Text(
                                       onlineUsers[index]['userName'],
-                                      style: TextStyle(color: Colors.white),
+                                      style: const TextStyle(color: Colors.white),
                                     ),
                                   ),
                                 );
@@ -537,7 +535,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                     },
                     onTap: () async {
                       var res = await Api.getOtherUserInfo(message.metadata!['userName']);
-                      print(res);
+                      debugPrint(res);
                       NavigatorTool.push(context, page: UserProfilePage(userProfile: res));
                       // if (res['code'] == 0) {}
                     },

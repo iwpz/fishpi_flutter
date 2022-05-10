@@ -2,15 +2,16 @@ import 'dart:convert';
 
 import 'package:fishpi_flutter/api/api.dart';
 import 'package:fishpi_flutter/manager/data_manager.dart';
+import 'package:fishpi_flutter/pages/setting_page.dart';
 import 'package:fishpi_flutter/style/global_style.dart';
+import 'package:fishpi_flutter/tools/navigator_tool.dart';
 import 'package:fishpi_flutter/widget/base_app_bar.dart';
 import 'package:fishpi_flutter/widget/base_page.dart';
-import 'package:fishpi_flutter/widget/medal_icon.dart';
 import 'package:fishpi_flutter/widget/medal_widget.dart';
 import 'package:flutter/material.dart';
 
 class MinePage extends StatefulWidget {
-  MinePage({Key? key}) : super(key: key);
+  const MinePage({Key? key}) : super(key: key);
 
   @override
   State<MinePage> createState() => _MinePageState();
@@ -41,8 +42,8 @@ class _MinePageState extends State<MinePage> {
 flutter: fontcolor=ff3030\",\"enabled\":true},{\"data\":\"\",\"name\":\"开发\",\"description\":\"摸鱼派官方开发组成员\",\"attr\":\"url=https://pwl.stackoverflow.wiki/2021/12/metaldev-db507262.png&backcolor=483d8b&fontcolor=f8f8ff\",\"enabled\":true},{\"data\":\"\",\"name\":\"纪律委员\",\"description\":\"摸鱼派管理组成员\",\"attr\":\"url=https://pwl.stackoverflow.wiki/2021/12/011shield-46ce360b.jpg&backcolor=2568ff&fontcolor=ffffff\",\"enabled\":true}]}",
 "userRole":"纪律委员","followerCount":0,"userURL":""}}
          */
-        print('check data:');
-        print(DataManager.myInfo);
+        debugPrint('check data:');
+        debugPrint(DataManager.myInfo.toString());
         medalList = json.decode(DataManager.myInfo['sysMetal'].toString())['list'];
       });
       setState(() {
@@ -56,6 +57,15 @@ flutter: fontcolor=ff3030\",\"enabled\":true},{\"data\":\"\",\"name\":\"开发\"
     return BasePage(
       appBar: BaseAppBar(
         title: DataManager.myInfo['userNickname'],
+        rightWidget: GestureDetector(
+          onTap: () {
+            NavigatorTool.push(context, page: SettingPage());
+          },
+          child: Container(
+            margin: const EdgeInsets.only(right: 16),
+            child: const Icon(Icons.settings),
+          ),
+        ),
         showBack: false,
       ),
       child: Column(
@@ -111,14 +121,14 @@ flutter: fontcolor=ff3030\",\"enabled\":true},{\"data\":\"\",\"name\":\"开发\"
                           Row(
                             children: [
                               DataManager.myInfo['userRole'] == '纪律委员'
-                                  ? Container(
+                                  ? SizedBox(
                                       height: 20,
                                       width: 64,
                                       // margin: const EdgeInsets.only(top: 10),
                                       child: Image.network('https://pwl.stackoverflow.wiki/policeRole.png'),
                                     )
                                   : DataManager.myInfo['userRole'] == '管理员'
-                                      ? Container(
+                                      ? SizedBox(
                                           height: 20,
                                           width: 64,
                                           // margin: const EdgeInsets.only(top: 10),

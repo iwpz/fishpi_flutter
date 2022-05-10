@@ -21,7 +21,7 @@ class IWPZTextField extends StatefulWidget {
   final double? contentPaddingValue;
   final FocusNode? focusNode;
   final bool? enabled;
-  IWPZTextField({
+  const IWPZTextField({
     Key? key,
     this.controller,
     this.hintText,

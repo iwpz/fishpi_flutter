@@ -5,12 +5,11 @@ import 'package:fishpi_flutter/pages/index_page.dart';
 import 'package:fishpi_flutter/pages/login_page.dart';
 import 'package:fishpi_flutter/tools/navigator_tool.dart';
 import 'package:fishpi_flutter/tools/sp_tool.dart';
-import 'package:fishpi_flutter/tools/string_tool.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class SplashPage extends StatefulWidget {
-  SplashPage({Key? key}) : super(key: key);
+  const SplashPage({Key? key}) : super(key: key);
 
   @override
   State<SplashPage> createState() => _SplashPageState();
@@ -21,41 +20,44 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     RequestManager.init();
 
-    print('check login status');
+    debugPrint('check login status');
     _checkLoginStatus();
     super.initState();
   }
 
   void _checkLoginStatus() async {
-    print('准备获取storage');
+    debugPrint('准备获取storage');
     String apiKey = await SPTool().getStorage('ApiKey') ?? '';
 
-    print('获取APIkey：');
-    print(apiKey);
+    debugPrint('获取APIkey：');
+    debugPrint(apiKey);
     if (apiKey.isEmpty) {
       Future.delayed(const Duration(milliseconds: 2000), () {
-        NavigatorTool.push(context, page: LoginPage());
+        NavigatorTool.push(context, page: const LoginPage());
       });
     } else {
       RequestManager.updateApiKey(apiKey);
-      print('API KEY not null');
+      debugPrint('API KEY not null');
       var res = await Api.getUserInfo();
 
       if (res['code'] == 0) {
         DataManager.myInfo = res['data'];
-        NavigatorTool.pushAndRemove(context, page: IndexPage());
+        NavigatorTool.pushAndRemove(context, page: const IndexPage());
       } else {
+        Fluttertoast.showToast(msg: res['msg']);
         SPTool().removeStorage('ApiKey');
-        NavigatorTool.push(context, page: LoginPage());
+        NavigatorTool.push(context, page: const LoginPage());
       }
-      print(res);
+      debugPrint(res);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Center(child: Text('myp')),
+      body: Center(
+        child: Text('myp'),
+      ),
     );
   }
 }

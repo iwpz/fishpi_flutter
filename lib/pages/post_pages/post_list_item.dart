@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class PostListItem extends StatefulWidget {
   final postItem;
   final Function? onTap;
-  PostListItem({Key? key, required this.postItem, this.onTap}) : super(key: key);
+  const PostListItem({Key? key, required this.postItem, this.onTap}) : super(key: key);
 
   @override
   State<PostListItem> createState() => _PostListItemState();
@@ -27,9 +27,9 @@ class _PostListItemState extends State<PostListItem> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Container(
-              margin: EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.only(right: 10),
               child: widget.postItem['articleThumbnailURL'].toString().isNotEmpty
                   ? CachedNetworkImage(
                       imageUrl: widget.postItem['articleThumbnailURL'],

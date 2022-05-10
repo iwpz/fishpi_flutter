@@ -100,7 +100,7 @@ class IWPZTableView extends StatefulWidget {
   /// 最后一行是否隐藏分割线
   final bool showLastLine;
 
-  IWPZTableView({
+  const IWPZTableView({
     Key? key,
     this.height,
     this.width,
@@ -214,16 +214,16 @@ class _IWPZTableViewState extends State<IWPZTableView> {
 
     // 添加header
     if (widget.header != null) {
-      TableIndexPath sectionIndexPath = TableIndexPath(section: 0, row: 0, type: TableItemType.Header);
+      TableIndexPath sectionIndexPath = TableIndexPath(section: 0, row: 0, type: TableItemType.header);
       indexPaths!.add(sectionIndexPath);
     }
 
     // 判断是否缓存了展开状态数据
-    bool isNull = isSpreads.length == 0;
+    bool isNull = isSpreads.isEmpty;
 
     for (int i = 0; i < rows.length; i++) {
       // 添加section对应的indexPath
-      TableIndexPath sectionIndexPath = TableIndexPath(section: i, row: 0, type: TableItemType.section_header);
+      TableIndexPath sectionIndexPath = TableIndexPath(section: i, row: 0, type: TableItemType.sectionHeader);
       indexPaths!.add(sectionIndexPath);
 
       // 获取当前section是否是展开状态,如果不展开，不添加对应的rowItems
@@ -236,7 +236,7 @@ class _IWPZTableViewState extends State<IWPZTableView> {
         TableIndexPath rowIndexPath = TableIndexPath(
           section: i,
           row: j,
-          type: j == rows[i] ? TableItemType.section_footer : TableItemType.row,
+          type: j == rows[i] ? TableItemType.sectionFooter : TableItemType.row,
         );
         indexPaths!.add(rowIndexPath);
       }
@@ -244,7 +244,7 @@ class _IWPZTableViewState extends State<IWPZTableView> {
 
     // 添加footer
     if (widget.footer != null) {
-      TableIndexPath sectionIndexPath = TableIndexPath(section: 0, row: 0, type: TableItemType.Footer);
+      TableIndexPath sectionIndexPath = TableIndexPath(section: 0, row: 0, type: TableItemType.footer);
       indexPaths!.add(sectionIndexPath);
     }
   }
@@ -252,7 +252,7 @@ class _IWPZTableViewState extends State<IWPZTableView> {
   ///初始化Table主List
   Widget _setUpTableList() {
     return ListView.builder(
-      padding: EdgeInsets.only(top: 0),
+      padding: const EdgeInsets.only(top: 0),
       shrinkWrap: widget.shrinkWrap!,
       physics: widget.physics,
       controller: widget.controller,
@@ -262,17 +262,17 @@ class _IWPZTableViewState extends State<IWPZTableView> {
         TableIndexPath currentIndexPath = indexPaths![index];
         // 根据indexPath的row属性来判断section/row/header/footer
         switch (currentIndexPath.type) {
-          case TableItemType.section_header:
+          case TableItemType.sectionHeader:
             return GestureDetector(
               onTap: () {
-                print('call on tap!!!');
+                debugPrint('call on tap!!!');
                 // 判断是否自动展开
                 // if (widget.autoSpread != true) return;
                 // 判断展开记录状态
                 bool currentState = isSpreads[currentIndexPath.section!];
                 // 修改对应展开状态
                 if (widget.onSectionSpread != null) {
-                  print('call onspreads');
+                  debugPrint('call onspreads');
                   widget.onSectionSpread!(currentIndexPath.section!, !isSpreads[currentIndexPath.section!]);
                 }
                 isSpreads[currentIndexPath.section!] = !currentState;
@@ -285,16 +285,16 @@ class _IWPZTableViewState extends State<IWPZTableView> {
               },
               // 如果没有设置section对应的widget，默认SizedBox()占位
               child: widget.sectionHeader == null
-                  ? SizedBox()
+                  ? const SizedBox()
                   : widget.sectionHeader!(
-                      currentIndexPath.section!, (isSpreads.length > 0 ? isSpreads[currentIndexPath.section!] : false)),
+                      currentIndexPath.section!, (isSpreads.isNotEmpty ? isSpreads[currentIndexPath.section!] : false)),
             );
-          case TableItemType.section_footer:
-            return widget.sectionFooter == null ? SizedBox() : widget.sectionFooter!(currentIndexPath.section!);
-          case TableItemType.Header:
-            return widget.header == null ? SizedBox() : widget.header!();
-          case TableItemType.Footer:
-            return widget.footer == null ? SizedBox() : widget.footer!();
+          case TableItemType.sectionFooter:
+            return widget.sectionFooter == null ? const SizedBox() : widget.sectionFooter!(currentIndexPath.section!);
+          case TableItemType.header:
+            return widget.header == null ? const SizedBox() : widget.header!();
+          case TableItemType.footer:
+            return widget.footer == null ? const SizedBox() : widget.footer!();
           default:
             final rowCount = widget.rowCount!(currentIndexPath.section!);
             final isLast = currentIndexPath.row == rowCount - 1;
@@ -328,7 +328,7 @@ class _IWPZTableViewState extends State<IWPZTableView> {
 
   Widget hiddenLine(bool isLast) {
     return isLast || widget.hideLine
-        ? SizedBox()
+        ? const SizedBox()
         : Container(
             color: widget.backgroundColor,
             padding: widget.linePadding,
@@ -361,13 +361,13 @@ class _IWPZTableViewState extends State<IWPZTableView> {
         onRefresh: widget.onRefresh,
         child: _setUpTableList(),
         header: CustomHeader(builder: (BuildContext context, RefreshStatus? mode) {
-          return Container(
+          return SizedBox(
             height: 55.0,
             child: Center(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
+                children: const <Widget>[
                   CupertinoActivityIndicator(),
                   SizedBox(width: 6),
                   Text("重新加载"),
@@ -380,23 +380,23 @@ class _IWPZTableViewState extends State<IWPZTableView> {
           builder: (BuildContext context, LoadStatus? mode) {
             Widget body;
             if (mode == LoadStatus.idle) {
-              body = SizedBox();
+              body = const SizedBox();
             } else if (mode == LoadStatus.loading) {
-              body = CupertinoActivityIndicator();
+              body = const CupertinoActivityIndicator();
             } else if (mode == LoadStatus.failed) {
-              body = Text(
+              body = const Text(
                 "加载失败",
                 style: TextStyle(fontSize: 14, color: Colors.grey),
               );
             } else if (mode == LoadStatus.canLoading) {
-              body = CupertinoActivityIndicator();
+              body = const CupertinoActivityIndicator();
             } else {
-              body = Text(
+              body = const Text(
                 "没有更多了",
                 style: TextStyle(fontSize: 14, color: Colors.grey),
               );
             }
-            return Container(
+            return SizedBox(
               height: 55.0,
               child: Center(child: body),
             );
@@ -453,9 +453,9 @@ class TableIndexPath {
 
 /// item的type类型
 enum TableItemType {
-  Header,
-  Footer,
-  section_header,
-  section_footer,
+  header,
+  footer,
+  sectionHeader,
+  sectionFooter,
   row,
 }

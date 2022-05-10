@@ -4,10 +4,11 @@ import 'dart:io';
 import 'package:fishpi_flutter/config.dart';
 import 'package:fishpi_flutter/manager/chat_room_message_manager.dart';
 import 'package:fishpi_flutter/manager/request_manager.dart';
+import 'package:flutter/material.dart';
 
 class WebsocketManager {
   factory WebsocketManager() => _sharedInstance();
-  static WebsocketManager _instance = WebsocketManager._();
+  static final WebsocketManager _instance = WebsocketManager._();
   late WebSocket _socket;
   WebsocketManager._();
 
@@ -16,9 +17,7 @@ class WebsocketManager {
   }
 
   void init() async {
-    String url = AppConfig.baseWsUrl +
-        '/chat-room-channel?apiKey=' +
-        RequestManager.apiKey;
+    String url = AppConfig.baseWsUrl + '/chat-room-channel?apiKey=' + RequestManager.apiKey;
     _socket = await WebSocket.connect(url);
     _socket.listen(
       (message) {
@@ -26,8 +25,8 @@ class WebsocketManager {
         ChatRoomMessageManager.fireNewMessage(msg);
       },
       onError: (error) {
-        print('ws onerror');
-        print(error);
+        debugPrint('ws onerror');
+        debugPrint(error.toString());
       },
       onDone: () {},
     );

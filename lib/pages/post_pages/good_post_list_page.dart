@@ -29,7 +29,7 @@ class _GoodPostListPageState extends State<GoodPostListPage> with AutomaticKeepA
   }
 
   void _loadData(int page) async {
-    print('请求第$page页数据');
+    debugPrint('请求第$page页数据');
     var res = await Api.getGoodPosts(page: page);
     if (res['code'] == 0) {
       maxPage = res['data']['pagination']['paginationPageCount'];

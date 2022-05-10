@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SPTool {
@@ -30,7 +28,7 @@ class SPTool {
     // 监测value的类型 如果是Map和List,则转换成JSON，以字符串进行存储
     if (value is Map || value is List) {
       type = 'String';
-      value = JsonEncoder().convert(value);
+      value = const JsonEncoder().convert(value);
     }
     // 否则 获取value的类型的字符串形式
     else {
@@ -60,7 +58,7 @@ class SPTool {
     dynamic value = _storage.get(key);
     // 判断value是不是一个json的字符串 是 则解码
     if (_isJson(value)) {
-      return JsonDecoder().convert(value);
+      return const JsonDecoder().convert(value);
     } else {
       // 不是 则直接返回
       return value;
@@ -102,7 +100,7 @@ class SPTool {
   _isJson(dynamic value) {
     try {
       // 如果value是一个json的字符串 则不会报错 返回true
-      JsonDecoder().convert(value);
+      const JsonDecoder().convert(value);
       return true;
     } catch (e) {
       // 如果value不是json的字符串 则报错 进入catch 返回false

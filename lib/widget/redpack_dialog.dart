@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fishpi_flutter/manager/data_manager.dart';
 import 'package:fishpi_flutter/tools/no_shadow_scroll_behavior.dart';
 import 'package:fishpi_flutter/widget/iwpz_dialog.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RedpackDialog {
@@ -85,8 +84,7 @@ class RedpackDialog {
           Expanded(
             child: ScrollConfiguration(
               behavior: NoShadowScrollBehavior(),
-              child: Container(
-                // color: Colors.white,
+              child: SizedBox(
                 child: ListView.builder(
                   itemCount: who.length,
                   itemBuilder: (context, index) {

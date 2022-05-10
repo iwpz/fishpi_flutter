@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MedalIcon extends StatelessWidget {
-  final medal;
+  final Map medal;
   const MedalIcon({Key? key, required this.medal}) : super(key: key);
 
   @override
@@ -19,7 +19,7 @@ class MedalIcon extends StatelessWidget {
       margin: const EdgeInsets.only(left: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25),
-        border: Border.all(color: const Color(0xFFCECECE),width: 0.5),
+        border: Border.all(color: const Color(0xFFCECECE), width: 0.5),
         image: DecorationImage(image: NetworkImage(url)),
       ),
     );

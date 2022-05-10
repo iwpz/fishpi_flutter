@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:fishpi_flutter/api/api.dart';
 import 'package:fishpi_flutter/style/global_style.dart';
 import 'package:fishpi_flutter/widget/base_app_bar.dart';
 import 'package:fishpi_flutter/widget/base_page.dart';
@@ -9,7 +7,7 @@ import 'package:flutter/material.dart';
 
 class UserProfilePage extends StatefulWidget {
   final userProfile;
-  UserProfilePage({Key? key, required this.userProfile}) : super(key: key);
+  const UserProfilePage({Key? key, required this.userProfile}) : super(key: key);
 
   @override
   State<UserProfilePage> createState() => _UserProfilePageState();
@@ -97,17 +95,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           Row(
                             children: [
                               widget.userProfile['userRole'] == '纪律委员'
-                                  ? Container(
+                                  ? SizedBox(
                                       height: 20,
                                       width: 64,
-                                      // margin: const EdgeInsets.only(top: 10),
                                       child: Image.network('https://pwl.stackoverflow.wiki/policeRole.png'),
                                     )
                                   : widget.userProfile['userRole'] == '管理员'
-                                      ? Container(
+                                      ? SizedBox(
                                           height: 20,
                                           width: 64,
-                                          // margin: const EdgeInsets.only(top: 10),
                                           child: Image.network('https://pwl.stackoverflow.wiki/adminRole.png'),
                                         )
                                       : Container(),
