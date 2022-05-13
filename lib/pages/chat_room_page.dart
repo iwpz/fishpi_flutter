@@ -6,6 +6,7 @@ import 'package:fishpi_flutter/api/api.dart';
 import 'package:fishpi_flutter/manager/chat_room_message_manager.dart';
 import 'package:fishpi_flutter/manager/data_manager.dart';
 import 'package:fishpi_flutter/pages/user_profile_page.dart';
+import 'package:fishpi_flutter/style/global_style.dart';
 import 'package:fishpi_flutter/tools/navigator_tool.dart';
 import 'package:fishpi_flutter/widget/base_app_bar.dart';
 import 'package:fishpi_flutter/widget/base_page.dart';
@@ -53,9 +54,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     _loadMessages();
     if (DataManager.chatRoomOnLineInfo != null) {
       setState(() {
-        onlineCount = DataManager.chatRoomOnLineInfo['onlineChatCnt'];
-        currentDiscussing = DataManager.chatRoomOnLineInfo['discussing'];
-        onlineUsers = DataManager.chatRoomOnLineInfo['users'];
+        onlineCount = DataManager.chatRoomOnLineInfo['onlineChatCnt'] == null
+            ? 0
+            : DataManager.chatRoomOnLineInfo['onlineChatCnt'];
+        currentDiscussing =
+            DataManager.chatRoomOnLineInfo['discussing'] == null ? '' : DataManager.chatRoomOnLineInfo['discussing'];
+        onlineUsers = DataManager.chatRoomOnLineInfo['users'] == null ? [] : DataManager.chatRoomOnLineInfo['users'];
       });
     }
     stream = ChatRoomMessageManager.listeningNewMessage((message) {
@@ -194,7 +198,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                         builderState(() {
                           redpackType = value!;
                           _redPacketMessageController.text = '玩的就是心跳！';
-                          _redPacketCountController.text = '2';
+                          _redPacketCountController.text = '5';
                           _redPacketTotalScore = _redPacketScoreController.text;
                         });
                       }),
@@ -556,13 +560,17 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                     Rect.fromLTRB(x, y, x + 50, y - 50),
                     Offset.zero & overlay!.size,
                   );
-                  PopupMenuItem popupMenuItem = const PopupMenuItem(
+                  PopupMenuItem backMenuItem = const PopupMenuItem(
                     child: Text("撤回"),
                     value: 1,
                     height: 20,
-                    // padding: EdgeInsets.only(),
                   );
-                  List<PopupMenuEntry<dynamic>> list = [popupMenuItem]; //菜单栏需要显示的菜单项集合
+                  PopupMenuItem reportMenuItem = const PopupMenuItem(
+                    child: Text("举报"),
+                    value: 2,
+                    height: 20,
+                  );
+                  List<PopupMenuEntry<dynamic>> list = [backMenuItem, reportMenuItem]; //菜单栏需要显示的菜单项集合
 
                   showMenu(context: context, position: position, items: list).then((value) async {
                     if (value == 1) {
@@ -570,6 +578,13 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                       if (res['code'] != 0) {
                         Fluttertoast.showToast(msg: res['msg']);
                       }
+                    } else if (value == 2) {
+                      var res = await Api.reportMessage(
+                        reportDataId: message.metadata!['oId'],
+                        reportDataType: 3,
+                        reportType: 49,
+                        reportMemo: '在聊天室中的举报',
+                      );
                     }
                   });
                   // PopupMenuButton
@@ -811,6 +826,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         title: '聊天室',
         showBack: true,
         rightTitle: '在线人数：$onlineCount',
+        backgroundColor: GlobalStyle.mainThemeColor,
       ),
       child: SafeArea(
         child: Chat(

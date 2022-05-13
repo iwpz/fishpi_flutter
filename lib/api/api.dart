@@ -13,6 +13,33 @@ class Api {
     return RequestManager.post('/api/getKey', data: data);
   }
 
+  static register({required String userName, required String phoneNumber, required captcha}) {
+    var data = {
+      'userName': userName,
+      'userPhone': phoneNumber,
+      'captcha': captcha,
+    };
+    return RequestManager.post('/register', data: data);
+  }
+
+  static finishRegister({
+    required int userAppRole,
+    required String userPassword,
+    required String userId,
+  }) {
+    var data = {
+      'userAppRole': userAppRole,
+      'userPassword': userPassword,
+      'userId': userId,
+      // 'r': 'iwpz',
+    };
+    RequestManager.post('/register2?r=iwpz', data: data);
+  }
+
+  static checkVerifyCode(String code) {
+    return RequestManager.get('/verify?code=$code');
+  }
+
   static getChatHistoryMessage({int page = 1}) {
     return RequestManager.get('/chat-room/more', params: {'page': page});
   }
@@ -32,6 +59,25 @@ class Api {
 
   static revokeMessage(String oId) {
     return RequestManager.delete('/chat-room/revoke/$oId');
+  }
+
+  static reportMessage({
+    required String reportDataId,
+    int reportDataType = 3,
+    int reportType = 49,
+    String reportMemo = '',
+  }) {
+    var data = {
+      'reportDataId': reportDataId,
+      'reportDataType': reportDataType,
+      'reportType': reportType,
+      'reportMemo': reportMemo,
+    };
+    return RequestManager.post(
+      '/report',
+      data: data,
+      contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+    );
   }
 
   static sendRedPacket({
@@ -124,5 +170,9 @@ class Api {
 
   static getPostInfo(String oId) {
     return RequestManager.get('/api/article/$oId');
+  }
+
+  static getCaptcha() {
+    return '/captcha';
   }
 }

@@ -10,6 +10,7 @@ class IWPZTextField extends StatefulWidget {
   final Widget? rightWidget;
   final double? height;
   final int? maxLength;
+  final bool? isPassword;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final Function(String)? onSubmitted;
@@ -21,7 +22,7 @@ class IWPZTextField extends StatefulWidget {
   final double? contentPaddingValue;
   final FocusNode? focusNode;
   final bool? enabled;
-  const IWPZTextField({
+  IWPZTextField({
     Key? key,
     this.controller,
     this.hintText,
@@ -31,6 +32,7 @@ class IWPZTextField extends StatefulWidget {
     this.rightWidget,
     this.height,
     this.maxLength,
+    this.isPassword = false,
     this.keyboardType,
     this.textInputAction,
     this.onSubmitted,
@@ -62,9 +64,12 @@ class _IWPZTextFieldState extends State<IWPZTextField> {
               color: widget.backgroundColor,
               borderRadius: widget.borderRadius,
             ),
+      height: widget.height,
+      alignment: Alignment.centerLeft,
       child: TextField(
         focusNode: widget.focusNode,
         maxLength: widget.maxLength,
+        obscureText: widget.isPassword!,
         maxLengthEnforcement: MaxLengthEnforcement.truncateAfterCompositionEnds,
         keyboardType: widget.keyboardType,
         textInputAction: widget.textInputAction,
@@ -87,6 +92,7 @@ class _IWPZTextFieldState extends State<IWPZTextField> {
           }
         },
         decoration: InputDecoration(
+          isCollapsed: true,
           counterText: '',
           prefixIcon: widget.leftWidget == null
               ? null
@@ -97,8 +103,10 @@ class _IWPZTextFieldState extends State<IWPZTextField> {
           prefix: Container(width: widget.leftWidget == null ? 10 : 0),
           suffixIcon: widget.rightWidget == null
               ? null
-              : Padding(
-                  padding: const EdgeInsets.only(right: 10.0),
+              : Container(
+                  width: 100,
+                  padding: const EdgeInsets.only(right: 10),
+                  alignment: Alignment.centerRight,
                   child: widget.rightWidget,
                 ),
           hintText: widget.hintText ?? '',
@@ -106,8 +114,7 @@ class _IWPZTextFieldState extends State<IWPZTextField> {
               ? const TextStyle(color: Color(0xff757575), fontSize: 14, height: 1.4)
               : widget.hintStyle!,
           enabled: widget.enabled!,
-          contentPadding:
-              EdgeInsets.only(left: 10, top: widget.contentPaddingValue!, bottom: widget.contentPaddingValue!),
+          contentPadding: EdgeInsets.only(left: 10, bottom: widget.contentPaddingValue!),
           border: InputBorder.none,
         ),
       ),

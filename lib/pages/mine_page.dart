@@ -42,9 +42,10 @@ class _MinePageState extends State<MinePage> {
 flutter: fontcolor=ff3030\",\"enabled\":true},{\"data\":\"\",\"name\":\"开发\",\"description\":\"摸鱼派官方开发组成员\",\"attr\":\"url=https://pwl.stackoverflow.wiki/2021/12/metaldev-db507262.png&backcolor=483d8b&fontcolor=f8f8ff\",\"enabled\":true},{\"data\":\"\",\"name\":\"纪律委员\",\"description\":\"摸鱼派管理组成员\",\"attr\":\"url=https://pwl.stackoverflow.wiki/2021/12/011shield-46ce360b.jpg&backcolor=2568ff&fontcolor=ffffff\",\"enabled\":true}]}",
 "userRole":"纪律委员","followerCount":0,"userURL":""}}
          */
-        debugPrint('check data:');
-        debugPrint(DataManager.myInfo.toString());
+        // debugPrint('check data:');
+        // debugPrint(DataManager.myInfo.toString());
         medalList = json.decode(DataManager.myInfo['sysMetal'].toString())['list'];
+        print(medalList);
       });
       setState(() {
         title = DataManager.myInfo['userNickname'];
@@ -56,6 +57,7 @@ flutter: fontcolor=ff3030\",\"enabled\":true},{\"data\":\"\",\"name\":\"开发\"
   Widget build(BuildContext context) {
     return BasePage(
       appBar: BaseAppBar(
+        backgroundColor: GlobalStyle.mainThemeColor,
         title: DataManager.myInfo['userNickname'],
         rightWidget: GestureDetector(
           onTap: () {

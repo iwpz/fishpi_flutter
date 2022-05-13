@@ -4,19 +4,27 @@ import 'package:flutter/material.dart';
 
 class BaseAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String? title;
+  final Widget? centerWidget;
   final bool? isModal;
   final bool? showBack;
   final Widget? rightWidget;
   final String? rightTitle;
   final Function? onRightTap;
+  final Color? backgroundColor;
+  final bool? showBottomShadow;
+  final Color? contentColor;
   const BaseAppBar({
     Key? key,
     this.title,
+    this.centerWidget,
     this.isModal = false,
     this.showBack = true,
     this.rightWidget,
     this.rightTitle,
     this.onRightTap,
+    this.backgroundColor = Colors.transparent,
+    this.showBottomShadow = true,
+    this.contentColor = Colors.white,
   }) : super(key: key);
 
   @override
@@ -30,7 +38,8 @@ class _BaseAppBarState extends State<BaseAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: GlobalStyle.mainThemeColor,
+      backgroundColor: widget.backgroundColor!,
+      shadowColor: widget.showBottomShadow == true ? Colors.black : Colors.transparent,
       centerTitle: true,
       leading: widget.showBack == true
           ? GestureDetector(
@@ -40,18 +49,22 @@ class _BaseAppBarState extends State<BaseAppBar> {
               child: widget.isModal == true
                   ? Container(
                       margin: const EdgeInsets.only(left: 20, top: 20),
-                      child: const Text('取消', style: TextStyle(fontSize: 16, color: Colors.white)),
+                      child: Text('取消', style: TextStyle(fontSize: 16, color: widget.contentColor)),
                     )
-                  : const Icon(
-                    Icons.arrow_back,
-                    color: Colors.white,
-                  ),
+                  : Icon(
+                      Icons.arrow_back,
+                      color: widget.contentColor,
+                    ),
             )
           : Container(),
-      title: Text(
-        widget.title == null ? '' : widget.title!,
-        style: const TextStyle(color: Colors.white, fontSize: 17),
-      ),
+      title: widget.title != null
+          ? Text(
+              widget.title == null ? '' : widget.title!,
+              style: TextStyle(color: widget.contentColor, fontSize: 17),
+            )
+          : widget.centerWidget == null
+              ? Container()
+              : widget.centerWidget!,
       actions: [
         widget.rightTitle != null
             ? GestureDetector(
@@ -64,7 +77,7 @@ class _BaseAppBarState extends State<BaseAppBar> {
                   padding: const EdgeInsets.only(right: 20, top: 20),
                   child: Text(
                     widget.rightTitle!,
-                    style: const TextStyle(fontSize: 16, color: Colors.white),
+                    style: TextStyle(fontSize: 16, color: widget.contentColor),
                   ),
                 ),
               )

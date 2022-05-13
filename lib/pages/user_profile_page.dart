@@ -41,6 +41,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       appBar: BaseAppBar(
         title: widget.userProfile['userNickname'],
         showBack: true,
+        backgroundColor: GlobalStyle.mainThemeColor,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -154,8 +154,8 @@ class RequestManager {
       }
     } on DioError catch (e) {
       debugPrint('dio error:');
-      debugPrint(e.error);
-      debugPrint(e.message);
+      debugPrint(e.error.toString());
+      debugPrint(e.message.toString());
       // LogUtil.error(_dioError(e));
       return Future.error(e);
     } catch (e) {

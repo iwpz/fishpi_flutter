@@ -8,7 +8,7 @@ class MedalWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //url=https://pwl.stackoverflow.wiki/2021/12/ht1-d8149de4.jpg&backcolor=ffffff&fontcolor=ff3030
-    debugPrint(medal);
+    debugPrint(medal.toString());
     List<String> attrs = medal['attr'].toString().split('&');
     String url = attrs[0].replaceAll('url=', '');
     String backcolor = attrs[1].split('=')[1];

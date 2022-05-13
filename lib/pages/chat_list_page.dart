@@ -2,6 +2,7 @@ import 'package:fishpi_flutter/api/api.dart';
 import 'package:fishpi_flutter/manager/chat_room_message_manager.dart';
 import 'package:fishpi_flutter/manager/data_manager.dart';
 import 'package:fishpi_flutter/pages/chat_room_page.dart';
+import 'package:fishpi_flutter/style/global_style.dart';
 import 'package:fishpi_flutter/tools/navigator_tool.dart';
 import 'package:fishpi_flutter/widget/base_app_bar.dart';
 import 'package:fishpi_flutter/widget/base_page.dart';
@@ -23,7 +24,7 @@ class _ChatListPageState extends State<ChatListPage> with AutomaticKeepAliveClie
                   time: latestMessage['time'].toString(),
                   avatar: latestMessage['userAvatarURL']
    */
-  late var latestMessage;
+  var latestMessage = null;
 
   @override
   void initState() {
@@ -65,9 +66,10 @@ class _ChatListPageState extends State<ChatListPage> with AutomaticKeepAliveClie
   @override
   Widget build(BuildContext context) {
     return BasePage(
-      appBar: const BaseAppBar(
+      appBar: BaseAppBar(
         title: '聊天',
         showBack: false,
+        backgroundColor: GlobalStyle.mainThemeColor,
       ),
       child: ListView.builder(
         itemCount: 1,

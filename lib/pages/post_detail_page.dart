@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fishpi_flutter/api/api.dart';
+import 'package:fishpi_flutter/style/global_style.dart';
 import 'package:fishpi_flutter/widget/base_app_bar.dart';
 import 'package:fishpi_flutter/widget/base_page.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +34,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
   @override
   Widget build(BuildContext context) {
     return BasePage(
-      appBar: const BaseAppBar(
+      appBar: BaseAppBar(
         title: '帖子内容',
+        backgroundColor: GlobalStyle.mainThemeColor,
       ),
       child: postInfo == null
           ? Container()
