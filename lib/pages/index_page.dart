@@ -1,3 +1,5 @@
+import 'package:fishpi_flutter/manager/black_list_manager.dart';
+import 'package:fishpi_flutter/manager/chat_room_message_manager.dart';
 import 'package:fishpi_flutter/manager/websocket_manager.dart';
 import 'package:fishpi_flutter/pages/mine_page.dart';
 import 'package:fishpi_flutter/pages/post_list_page.dart';
@@ -29,8 +31,16 @@ class _IndexPageState extends State<IndexPage> {
   void initState() {
     WebsocketManager manager = WebsocketManager();
     manager.init();
+    ChatRoomMessageManager.startListening();
     super.initState();
+    _initBlackList();
     _pageController = PageController(initialPage: _tabIndex, keepPage: true);
+  }
+
+  _initBlackList() async {
+    var res = await BlackListManager().init();
+    print('初始化黑名单列表${res}');
+    print(BlackListManager().blackList);
   }
 
   @override

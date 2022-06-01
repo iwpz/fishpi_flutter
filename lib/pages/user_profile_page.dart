@@ -1,5 +1,9 @@
 import 'dart:convert';
+import 'package:fishpi_flutter/api/api.dart';
+import 'package:fishpi_flutter/manager/black_list_manager.dart';
+import 'package:fishpi_flutter/pages/send_pm_page.dart';
 import 'package:fishpi_flutter/style/global_style.dart';
+import 'package:fishpi_flutter/tools/navigator_tool.dart';
 import 'package:fishpi_flutter/widget/base_app_bar.dart';
 import 'package:fishpi_flutter/widget/base_page.dart';
 import 'package:fishpi_flutter/widget/medal_widget.dart';
@@ -42,21 +46,57 @@ class _UserProfilePageState extends State<UserProfilePage> {
         title: widget.userProfile['userNickname'],
         showBack: true,
         backgroundColor: GlobalStyle.mainThemeColor,
+        rightWidget: Container(
+          margin: const EdgeInsets.only(right: 20),
+          child: PopupMenuButton<String>(
+            onSelected: (item) async {
+              debugPrint('点击了$item');
+              if (item == '举报') {
+                await Api.reportMessage(
+                    reportDataType: 2,
+                    reportDataId: widget.userProfile['userName'],
+                    reportMemo: '举报了用户${widget.userProfile['userName']}');
+              } else if (item == '屏蔽') {
+                if (BlackListManager().isInBlackList(widget.userProfile['userName'])) {
+                } else {
+                  BlackListManager().addToBlackList(widget.userProfile['userName']);
+                  NavigatorTool.pop(context);
+                }
+              } else if (item == '私信') {
+                NavigatorTool.push(context, page: SendPMPage(userName: widget.userProfile['userName']));
+              }
+              // NavigatorTool.push(context, page: SendPostPage());
+            },
+            itemBuilder: (BuildContext context) {
+              return {'举报', '屏蔽', '私信'}.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+            child: const Icon(Icons.settings),
+          ),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            // padding: EdgeInsets.only(top: MediaQuery.of(context).size.width / 6),
+            // padding: const EdgeInsets.only(top: MediaQuery.of(context).size.width / 6),
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.width / 2,
-            decoration: BoxDecoration(
-              // color: Colors.white,
-              image: DecorationImage(image: NetworkImage(widget.userProfile['cardBg']), fit: BoxFit.fill),
-              boxShadow: [
-                GlobalStyle.bottomShadow,
-              ],
-            ),
+            decoration: widget.userProfile['cardBg'].toString().isEmpty
+                ? BoxDecoration(
+                    gradient: GlobalStyle.mainThemeGradient,
+                  )
+                : BoxDecoration(
+                    // color: Colors.white,
+                    image: DecorationImage(image: NetworkImage(widget.userProfile['cardBg']), fit: BoxFit.fill),
+                    boxShadow: [
+                      GlobalStyle.bottomShadow,
+                    ],
+                  ),
             child: Stack(
               children: [
                 Positioned(
@@ -84,7 +124,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      // SizedBox(width: 20),
+                      // const SizedBox(width: 20),
                       Column(
                         children: [
                           SizedBox(
@@ -135,7 +175,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                       widget.userProfile['userName'],
                                       style: const TextStyle(fontSize: 14, color: Color.fromARGB(138, 00, 00, 0)),
                                     ),
-                                    // const SizedBox(height: 10),
+                                    // const  SizedBox(height: 10),
                                   ],
                                 ),
                                 const SizedBox(width: 20),
@@ -165,20 +205,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ),
           ),
           const SizedBox(height: 20),
-          Container(
-            margin: const EdgeInsets.only(left: 20),
-            child: const Text(
-              '徽章：',
-              style: TextStyle(fontSize: 20),
-            ),
-          ),
+          medalList.isEmpty
+              ? Container()
+              : Container(
+                  margin: const EdgeInsets.only(left: 20),
+                  child: const Text(
+                    '徽章：',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
           Expanded(
             child: ListView(
-              // alignment: WrapAlignment.start,
-              // runAlignment: WrapAlignment.start,
-              // crossAxisAlignment: WrapCrossAlignment.center,
-              // spacing: 5,
-              // runSpacing: 5,
               children: List.generate(
                 medalList.length,
                 (index) {

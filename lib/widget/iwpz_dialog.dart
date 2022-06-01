@@ -40,7 +40,7 @@ class IWPZDialog {
                       borderRadius: BorderRadius.circular(20),
                       color: backgroundColor,
                     ),
-                    padding: const EdgeInsets.only(top: 32, left: 30, right: 30),
+                    padding: const EdgeInsets.only(top: 32, left: 10, right: 10),
                     height: height,
                     width: width,
                     child: Column(

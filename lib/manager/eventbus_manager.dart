@@ -7,6 +7,28 @@ class OnChatMessageEvent {
   OnChatMessageEvent(this.chatMessage);
 }
 
+class OnChatMessageUpdate {
+  var message;
+  OnChatMessageUpdate([this.message]);
+}
+
+class OnHistoryMessageLoaded {
+  OnHistoryMessageLoaded();
+}
+
+class OnOnlineStatusUpdate {
+  var onlineMessage;
+  OnOnlineStatusUpdate(this.onlineMessage);
+}
+
+class OnBlackListChangeEvent {
+  OnBlackListChangeEvent();
+}
+
+class OnListNeedRefreshEvent {
+  OnListNeedRefreshEvent();
+}
+
 class OnCloseSlidableEvent {
   var slidableId = {};
   OnCloseSlidableEvent(this.slidableId);

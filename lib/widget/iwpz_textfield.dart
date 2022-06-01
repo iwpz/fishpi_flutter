@@ -11,6 +11,7 @@ class IWPZTextField extends StatefulWidget {
   final double? height;
   final int? maxLength;
   final bool? isPassword;
+  final int? maxLines;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final Function(String)? onSubmitted;
@@ -22,7 +23,8 @@ class IWPZTextField extends StatefulWidget {
   final double? contentPaddingValue;
   final FocusNode? focusNode;
   final bool? enabled;
-  IWPZTextField({
+  final Color? cursorColor;
+  const IWPZTextField({
     Key? key,
     this.controller,
     this.hintText,
@@ -33,6 +35,7 @@ class IWPZTextField extends StatefulWidget {
     this.height,
     this.maxLength,
     this.isPassword = false,
+    this.maxLines = 1,
     this.keyboardType,
     this.textInputAction,
     this.onSubmitted,
@@ -44,6 +47,7 @@ class IWPZTextField extends StatefulWidget {
     this.contentPaddingValue = 10,
     this.focusNode,
     this.enabled = true,
+    this.cursorColor = Colors.white,
   }) : super(key: key);
 
   @override
@@ -69,12 +73,14 @@ class _IWPZTextFieldState extends State<IWPZTextField> {
       child: TextField(
         focusNode: widget.focusNode,
         maxLength: widget.maxLength,
+        cursorColor: widget.cursorColor,
         obscureText: widget.isPassword!,
         maxLengthEnforcement: MaxLengthEnforcement.truncateAfterCompositionEnds,
         keyboardType: widget.keyboardType,
         textInputAction: widget.textInputAction,
         controller: widget.controller,
         style: widget.style,
+        maxLines: widget.isPassword == true ? 1 : widget.maxLines,
         textAlign: TextAlign.left,
         onChanged: (text) {
           if (widget.onChanged != null) {

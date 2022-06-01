@@ -16,6 +16,8 @@
 	<string>fishpi_flutter</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>为了发送图片，我们需要访问您的相册</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>

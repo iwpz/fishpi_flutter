@@ -1,4 +1,6 @@
 import 'package:fishpi_flutter/api/api.dart';
+import 'package:fishpi_flutter/manager/black_list_manager.dart';
+import 'package:fishpi_flutter/manager/eventbus_manager.dart';
 import 'package:fishpi_flutter/pages/post_detail_page.dart';
 import 'package:fishpi_flutter/pages/post_pages/post_list_item.dart';
 import 'package:fishpi_flutter/tools/navigator_tool.dart';
@@ -7,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class RecentReplyPostListPage extends StatefulWidget {
-  RecentReplyPostListPage({Key? key}) : super(key: key);
+  const RecentReplyPostListPage({Key? key}) : super(key: key);
 
   @override
   State<RecentReplyPostListPage> createState() => _RecentReplyPostListPageState();
@@ -25,6 +27,20 @@ class _RecentReplyPostListPageState extends State<RecentReplyPostListPage> with 
   @override
   void initState() {
     _loadData(currentPage);
+    eventBus.on<OnBlackListChangeEvent>().listen((event) {
+      debugPrint('ev 监听到消息：event.OnBlackListChangeEvent');
+      if (mounted) {
+        setState(() {});
+      }
+    });
+    eventBus.on<OnListNeedRefreshEvent>().listen((event) {
+      debugPrint('ev 监听到消息：event.OnListNeedRefreshEvent');
+      if (mounted) {
+        currentPage = 1;
+        postList.clear();
+        _loadData(currentPage);
+      }
+    });
     super.initState();
   }
 
@@ -68,10 +84,15 @@ class _RecentReplyPostListPageState extends State<RecentReplyPostListPage> with 
         return postList.length;
       },
       row: (indexPath) {
+        if (BlackListManager().isInBlackList(postList[indexPath.row!]['articleAuthorName'])) {
+          return Container();
+        }
         return PostListItem(
           postItem: postList[indexPath.row!],
           onTap: (item) {
-            NavigatorTool.push(context, page: PostDetailPage(item: item));
+            NavigatorTool.push(context, page: PostDetailPage(item: item), then: (dynamic) {
+              setState(() {});
+            });
           },
         );
       },

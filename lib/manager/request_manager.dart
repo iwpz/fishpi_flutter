@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:fishpi_flutter/manager/data_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fishpi_flutter/config.dart';
@@ -30,9 +31,7 @@ class RequestManager {
       receiveTimeout: 20000,
       contentType: 'application/json',
       headers: {
-        "user-agent": Platform.isIOS
-            ? "Mozilla/5.0 (iPhone; CPU iPhone OS 15_3_1 like Mac OS X) FishPiFlutter AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Mobile/15E148 Safari/604.1"
-            : "Mozilla/5.0 (Windows NT 10.0; WOW64) FishPiFlutter Android AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36",
+        "user-agent": DataManager.userAgent,
       },
     );
     _dio = Dio(_options);

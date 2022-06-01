@@ -1,6 +1,7 @@
 import 'package:fishpi_flutter/api/api.dart';
 import 'package:fishpi_flutter/manager/chat_room_message_manager.dart';
 import 'package:fishpi_flutter/manager/data_manager.dart';
+import 'package:fishpi_flutter/manager/eventbus_manager.dart';
 import 'package:fishpi_flutter/pages/chat_room_page.dart';
 import 'package:fishpi_flutter/style/global_style.dart';
 import 'package:fishpi_flutter/tools/navigator_tool.dart';
@@ -17,46 +18,59 @@ class ChatListPage extends StatefulWidget {
 }
 
 class _ChatListPageState extends State<ChatListPage> with AutomaticKeepAliveClientMixin {
-  List? messageList = List.empty(growable: true);
-  /*
-  ['userNickname'].toString(),
-                  content: latestMessage['content'].toString(),
-                  time: latestMessage['time'].toString(),
-                  avatar: latestMessage['userAvatarURL']
-   */
-  var latestMessage = null;
-
+  var chatItem;
   @override
   void initState() {
-    _getHistoryMessage();
-
-    ChatRoomMessageManager.listeningNewMessage((message) {
-      if (message['type'] == 'msg') {
-        setState(() {
-          latestMessage = message;
-        });
-      } else if (message['type'] == 'online') {
-        DataManager.chatRoomOnLineInfo = message;
-      }
+    eventBus.on<OnChatMessageUpdate>().listen((event) {
+      print('聊天列表页更新消息：');
+      setState(() {
+        try {
+          chatItem = ChatRoomMessageManager.messageList.lastWhere((element) => element['type'] == 'msg');
+          print('获得最新一条消息');
+        } catch (ex) {
+          print('cell出错');
+          print(ex);
+          chatItem = null;
+        }
+      });
     });
+
+    eventBus.on<OnHistoryMessageLoaded>().listen((event) {
+      print('聊天列表页更新消息：');
+      setState(() {
+        try {
+          chatItem = ChatRoomMessageManager.messageList.lastWhere((element) => element['type'] == 'msg');
+          print('获得最新一条消息');
+        } catch (ex) {
+          print('cell出错');
+          print(ex);
+          chatItem = null;
+        }
+      });
+    });
+    _updateMessageFromData();
+
+    // ChatRoomMessageManager.loadMessage();
+
     super.initState();
   }
 
-  void _getHistoryMessage() async {
-    var res = await Api.getChatHistoryMessage(page: 1);
-    if (res['code'] == 0) {
-      // setState(() {
-      messageList = res['data'];
-      // });
-
-      setState(() {
-        if (messageList != null && messageList!.isNotEmpty) {
-          latestMessage = messageList!.first;
-          debugPrint('最新消息：');
-          debugPrint(latestMessage['content']);
-        }
-      });
+  void _updateMessageFromData() {
+    if (ChatRoomMessageManager.messageList.isEmpty) {
+      return;
     }
+    print('加载数据源中的消息');
+    // print(ChatRoomMessageManager.messageList);
+    setState(() {
+      try {
+        chatItem = ChatRoomMessageManager.messageList.lastWhere((element) => element['type'] == 'msg');
+        print('获得最新一条消息');
+      } catch (ex) {
+        print('cell出错');
+        print(ex);
+        chatItem = null;
+      }
+    });
   }
 
   void _gotoChatRoom() {
@@ -66,7 +80,7 @@ class _ChatListPageState extends State<ChatListPage> with AutomaticKeepAliveClie
   @override
   Widget build(BuildContext context) {
     return BasePage(
-      appBar: BaseAppBar(
+      appBar: const BaseAppBar(
         title: '聊天',
         showBack: false,
         backgroundColor: GlobalStyle.mainThemeColor,
@@ -74,29 +88,30 @@ class _ChatListPageState extends State<ChatListPage> with AutomaticKeepAliveClie
       child: ListView.builder(
         itemCount: 1,
         itemBuilder: (context, index) {
-          return latestMessage == null
-              ? ChatListItem(
-                  title: '聊天室',
-                  content: '',
-                  time: '',
-                  messageId: '',
-                  avatar: '',
-                  onTap: () {
-                    _gotoChatRoom();
-                  },
-                )
-              : ChatListItem(
-                  title: latestMessage['userNickname'].toString().isEmpty
-                      ? latestMessage['userName']
-                      : latestMessage['userNickname'] + '(${latestMessage['userName']})',
-                  messageId: latestMessage['oId'],
-                  content: latestMessage['content'].toString(),
-                  time: latestMessage['time'].toString(),
-                  avatar: latestMessage['userAvatarURL'].toString(),
-                  onTap: () {
-                    _gotoChatRoom();
-                  },
-                );
+          if (chatItem == null) {
+            return ChatListItem(
+              title: '聊天室',
+              content: '',
+              time: '',
+              messageId: '',
+              avatar: '',
+              onTap: () {
+                _gotoChatRoom();
+              },
+            );
+          }
+          return ChatListItem(
+            title: chatItem['userNickname'].toString().isEmpty
+                ? chatItem['userName']
+                : chatItem['userNickname'] + '(${chatItem['userName']})',
+            messageId: chatItem['oId'],
+            content: chatItem['content'].toString(),
+            time: chatItem['time'].toString(),
+            avatar: chatItem['userAvatarURL'].toString(),
+            onTap: () {
+              _gotoChatRoom();
+            },
+          );
         },
       ),
     );

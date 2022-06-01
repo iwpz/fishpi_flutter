@@ -1,5 +1,8 @@
 import 'package:fishpi_flutter/api/api.dart';
+import 'package:fishpi_flutter/manager/black_list_manager.dart';
+import 'package:fishpi_flutter/manager/eventbus_manager.dart';
 import 'package:fishpi_flutter/style/global_style.dart';
+import 'package:fishpi_flutter/tools/navigator_tool.dart';
 import 'package:fishpi_flutter/widget/base_app_bar.dart';
 import 'package:fishpi_flutter/widget/base_page.dart';
 import 'package:fishpi_flutter/widget/iwpz_dialog.dart';
@@ -25,6 +28,12 @@ class _WindMoonPageState extends State<WindMoonPage> {
   @override
   void initState() {
     _loadData();
+    eventBus.on<OnBlackListChangeEvent>().listen((event) {
+      debugPrint('ev 监听到消息：event.OnBlackListChangeEvent');
+      if (mounted) {
+        setState(() {});
+      }
+    });
     super.initState();
   }
 
@@ -118,6 +127,9 @@ class _WindMoonPageState extends State<WindMoonPage> {
           _loadData();
         },
         row: (indexPath) {
+          if (BlackListManager().isInBlackList(dataList[indexPath.row!]['breezemoonAuthorName'])) {
+            return Container();
+          }
           return WindMoonItem(
             data: dataList[indexPath.row!],
           );

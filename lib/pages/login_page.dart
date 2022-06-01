@@ -3,14 +3,12 @@ import 'package:fishpi_flutter/manager/data_manager.dart';
 import 'package:fishpi_flutter/manager/request_manager.dart';
 import 'package:fishpi_flutter/pages/index_page.dart';
 import 'package:fishpi_flutter/pages/reg_page.dart';
-import 'package:fishpi_flutter/style/global_style.dart';
 import 'package:fishpi_flutter/tools/navigator_tool.dart';
 import 'package:fishpi_flutter/tools/sp_tool.dart';
 import 'package:fishpi_flutter/tools/string_tool.dart';
 import 'package:fishpi_flutter/widget/base_page.dart';
 import 'package:fishpi_flutter/widget/iwpz_textfield.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginPage extends StatefulWidget {
@@ -49,28 +47,29 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return BasePage(
-      backgroundColor: Color(0xFF1F1F1F),
+      backgroundColor: const Color(0xFF1F1F1F),
+      scaleWithKeyboard: true,
       // resizeToAvoidBottomInset: true,
       child: Container(
         margin: const EdgeInsets.only(left: 20, right: 20),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 120),
+              const SizedBox(height: 80),
               SizedBox(
                 // height: 200,
                 child: Image.asset('assets/images/icon1024.png', height: 80, width: 80),
               ),
-              Text(
+              const Text(
                 '登录',
                 style: TextStyle(color: Colors.white, fontSize: 40),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               SizedBox(
                 height: 40,
                 child: Row(
                   children: [
-                    // SizedBox(
+                    // const SizedBox(
                     //   width: 70,
                     //   child: Text('用户名:',
                     //       style: TextStyle(
@@ -81,10 +80,11 @@ class _LoginPageState extends State<LoginPage> {
                       child: IWPZTextField(
                         backgroundColor: Colors.transparent,
                         hintText: '请输入用户名',
+                        maxLines: 1,
                         border: Border.all(color: Colors.white),
-                        leftWidget: Icon(Icons.account_circle, color: Colors.white),
+                        leftWidget: const Icon(Icons.account_circle, color: Colors.white),
                         // borderRadius: BorderRadius.circular(20),
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                         controller: _userNameController,
                       ),
                     ),
@@ -96,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: 40,
                 child: Row(
                   children: [
-                    // const SizedBox(
+                    // const  SizedBox(
                     //   width: 70,
                     //   child: Text('密码:',
                     //       style: TextStyle(
@@ -108,9 +108,9 @@ class _LoginPageState extends State<LoginPage> {
                         backgroundColor: Colors.transparent,
                         hintText: '请输入密码',
                         border: Border.all(color: Colors.white),
-                        leftWidget: Icon(Icons.lock, color: Colors.white),
+                        leftWidget: const Icon(Icons.lock, color: Colors.white),
                         // borderRadius: BorderRadius.circular(20),
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                         isPassword: true,
                         controller: _pwdController,
                       ),
@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: 40,
                 child: Row(
                   children: [
-                    // const SizedBox(
+                    // const  SizedBox(
                     //   width: 70,
                     //   child: Text('两步认证:',
                     //       style: TextStyle(
@@ -134,10 +134,12 @@ class _LoginPageState extends State<LoginPage> {
                       child: IWPZTextField(
                         backgroundColor: Colors.transparent,
                         hintText: '请输入两步验证码',
+                        maxLines: 1,
+                        keyboardType: TextInputType.number,
                         border: Border.all(color: Colors.white),
-                        leftWidget: Icon(Icons.shield, color: Colors.white),
+                        leftWidget: const Icon(Icons.shield, color: Colors.white),
                         // borderRadius: BorderRadius.circular(20),
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                         isPassword: true,
                         controller: _twoStepController,
                       ),
@@ -166,16 +168,16 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.white),
                       ),
-                      child: Text(
+                      child: const Text(
                         '登录',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
-                  SizedBox(width: 60),
+                  const SizedBox(width: 60),
                   GestureDetector(
                     onTap: () {
-                      NavigatorTool.push(context, page: RegPage());
+                      NavigatorTool.push(context, page: const RegPage());
                     },
                     child: Container(
                       height: 40,
@@ -185,7 +187,7 @@ class _LoginPageState extends State<LoginPage> {
                         color: Colors.white,
                         border: Border.all(color: Colors.white),
                       ),
-                      child: Text(
+                      child: const Text(
                         '注册',
                         style: TextStyle(color: Color(0xFF1F1F1F)),
                       ),

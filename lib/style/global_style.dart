@@ -17,10 +17,10 @@ class GlobalStyle {
     blurRadius: 5,
   );
 
-  static Color mainThemeColor = const Color(0xFF3b3e43);
+  static const Color mainThemeColor = Color(0xFF3b3e43);
 
   static LinearGradient mainThemeGradient = const LinearGradient(colors: [
-    Color(0xFFFFF6C3),
-    Color(0xFFFFE559),
+    Color(0xFF494947),
+    Color(0xFFFFFFFF),
   ]);
 }

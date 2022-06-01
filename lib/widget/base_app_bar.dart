@@ -13,6 +13,8 @@ class BaseAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Color? backgroundColor;
   final bool? showBottomShadow;
   final Color? contentColor;
+  final List<Widget>? actions;
+  final PreferredSizeWidget? bottom;
   const BaseAppBar({
     Key? key,
     this.title,
@@ -22,16 +24,18 @@ class BaseAppBar extends StatefulWidget implements PreferredSizeWidget {
     this.rightWidget,
     this.rightTitle,
     this.onRightTap,
-    this.backgroundColor = Colors.transparent,
+    this.backgroundColor = GlobalStyle.mainThemeColor,
     this.showBottomShadow = true,
     this.contentColor = Colors.white,
+    this.actions = const [],
+    this.bottom,
   }) : super(key: key);
 
   @override
   _BaseAppBarState createState() => _BaseAppBarState();
 
   @override
-  Size get preferredSize => Size.fromHeight(AppBar().preferredSize.height);
+  Size get preferredSize => _PreferredAppBarSize(56, bottom?.preferredSize.height);
 }
 
 class _BaseAppBarState extends State<BaseAppBar> {
@@ -41,6 +45,7 @@ class _BaseAppBarState extends State<BaseAppBar> {
       backgroundColor: widget.backgroundColor!,
       shadowColor: widget.showBottomShadow == true ? Colors.black : Colors.transparent,
       centerTitle: true,
+      bottom: widget.bottom,
       leading: widget.showBack == true
           ? GestureDetector(
               onTap: () {
@@ -65,26 +70,36 @@ class _BaseAppBarState extends State<BaseAppBar> {
           : widget.centerWidget == null
               ? Container()
               : widget.centerWidget!,
-      actions: [
-        widget.rightTitle != null
-            ? GestureDetector(
-                onTap: () {
-                  if (widget.onRightTap != null) {
-                    widget.onRightTap!();
-                  }
-                },
-                child: Container(
-                  padding: const EdgeInsets.only(right: 20, top: 20),
-                  child: Text(
-                    widget.rightTitle!,
-                    style: TextStyle(fontSize: 16, color: widget.contentColor),
-                  ),
-                ),
-              )
-            : widget.rightWidget != null
-                ? widget.rightWidget!
-                : Container(),
-      ],
+      actions: widget.actions!.isNotEmpty
+          ? widget.actions
+          : [
+              widget.rightTitle != null
+                  ? GestureDetector(
+                      onTap: () {
+                        if (widget.onRightTap != null) {
+                          widget.onRightTap!();
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.only(right: 20, top: 20),
+                        child: Text(
+                          widget.rightTitle!,
+                          style: TextStyle(fontSize: 16, color: widget.contentColor),
+                        ),
+                      ),
+                    )
+                  : widget.rightWidget != null
+                      ? widget.rightWidget!
+                      : Container(),
+            ],
     );
   }
+}
+
+class _PreferredAppBarSize extends Size {
+  _PreferredAppBarSize(this.toolbarHeight, this.bottomHeight)
+    : super.fromHeight((toolbarHeight ?? kToolbarHeight) + (bottomHeight ?? 0));
+
+  final double? toolbarHeight;
+  final double? bottomHeight;
 }

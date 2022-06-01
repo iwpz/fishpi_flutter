@@ -172,6 +172,62 @@ class Api {
     return RequestManager.get('/api/article/$oId');
   }
 
+  static sendPost({
+    required String title,
+    required String content,
+    required String tags,
+    bool? commentable = true,
+    bool? notifyFollowers = true,
+    int type = 0,
+    bool? showInList = true,
+    String? rewardContent,
+    int? rewardPoint,
+    bool? anonymous = false,
+  }) {
+    var data = {
+      "articleTitle": title,
+      "articleContent": content,
+      "articleTags": tags,
+      "articleCommentable": commentable,
+      "articleNotifyFollowers": notifyFollowers,
+      "articleType": type,
+      "articleShowInList": showInList == true ? 1 : 0,
+      "articleAnonymous": anonymous,
+    };
+    if (rewardContent != null && rewardContent.isNotEmpty && rewardPoint != null && rewardPoint > 0) {
+      data["articleRewardContent"] = rewardContent;
+      data["articleRewardPoint"] = rewardPoint.toString();
+    }
+    return RequestManager.post('/article', data: data);
+  }
+
+  static getPrivateMessage() {
+    return RequestManager.get('/api/idle-talk');
+  }
+
+  static markPMReaded(String mapId) {
+    var params = {'mapId': mapId};
+    return RequestManager.get('/idle-talk/seek', params: params);
+  }
+
+  static sendPM({
+    required String userName,
+    required String title,
+    required String content,
+  }) {
+    var data = {
+      'userName': userName,
+      'theme': title,
+      'content': content,
+    };
+    return RequestManager.post('/idle-talk/send', data: data);
+  }
+
+  static revokePM(String mapId) {
+    var params = {'mapId': mapId};
+    return RequestManager.get('/idle-talk/revoke', params: params);
+  }
+
   static getCaptcha() {
     return '/captcha';
   }

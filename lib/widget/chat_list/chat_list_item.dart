@@ -66,13 +66,13 @@ class _ChatListItemState extends State<ChatListItem> {
                         SizedBox(
                           width: 50,
                           child: Text(
-                            widget.time.isEmpty ? '' : formatDate(DateTime.parse(widget.time), [HH, ':', mm]),
+                            widget.time.isEmpty ? '' : formatDate(DateTime.parse(widget.time), [HH, ':', nn]),
                             style: const TextStyle(fontSize: 14, color: Colors.grey),
                           ),
                         ),
                       ],
                     ),
-                    // SizedBox(height: 5),
+                    // const SizedBox(height: 5),
                     Expanded(
                       child: Container(
                         child: widget.content.startsWith('{')

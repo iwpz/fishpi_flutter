@@ -84,6 +84,12 @@ class IWPZTableView extends StatefulWidget {
   /// 启用上拉加载更多
   final bool? enablePullUp;
 
+  /// 下拉刷新文本
+  final String? refreshLabel;
+
+  /// 上拉加载更多文本
+  final String? loadMoreLabel;
+
   /// 加载更多回调
   final VoidCallback? onLoading;
 
@@ -125,6 +131,8 @@ class IWPZTableView extends StatefulWidget {
     this.refreshController,
     this.enablePullDown = false,
     this.enablePullUp = false,
+    this.refreshLabel = '重新加载',
+    this.loadMoreLabel = '加载更多',
     this.onLoading,
     this.onRefresh,
     this.cellOnTap,
@@ -283,7 +291,7 @@ class _IWPZTableViewState extends State<IWPZTableView> {
                   setUpIndexPaths();
                 });
               },
-              // 如果没有设置section对应的widget，默认SizedBox()占位
+              // 如果没有设置section对应的widget，默认const SizedBox()占位
               child: widget.sectionHeader == null
                   ? const SizedBox()
                   : widget.sectionHeader!(
@@ -367,10 +375,10 @@ class _IWPZTableViewState extends State<IWPZTableView> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const <Widget>[
-                  CupertinoActivityIndicator(),
-                  SizedBox(width: 6),
-                  Text("重新加载"),
+                children: <Widget>[
+                  const CupertinoActivityIndicator(),
+                  const SizedBox(width: 6),
+                  Text(widget.refreshLabel ?? ''),
                 ],
               ),
             ),

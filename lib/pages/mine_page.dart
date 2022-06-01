@@ -25,7 +25,21 @@ class _MinePageState extends State<MinePage> {
   @override
   void initState() {
     _getUserInfo();
+    _getPrivateMessage();
     super.initState();
+  }
+
+  void _getPrivateMessage() async {
+    /*
+    {"code":0,"data":{"meReceived":[{"fromUserName":"Yui","toUserAvatar":"https://pwl.stackoverflow.wiki/2021/12/blob-0b83b50c.png","fromUserId":"1630488635229","toUserName":"iwpz","theme":"test","mapId":"1653900224302","fromUserAvatar":"https://pwl.stackoverflow.wiki/2022/02/blob-d135095b.png","toUserId":"1637917131504","content":":huaji:\n"}],"meSent":[]}}
+     */
+    var res = await Api.getPrivateMessage();
+    if (res['code'] == 0) {
+      setState(() {
+        DataManager.receivePrivateMessageList = res['data']['meReceived'];
+        DataManager.sendPrivateMessageList = res['data']['meSent'];
+      });
+    }
   }
 
   void _getUserInfo() async {
@@ -33,19 +47,7 @@ class _MinePageState extends State<MinePage> {
     if (res['code'] == 0) {
       setState(() {
         DataManager.myInfo = res['data'];
-        /*
-        {"msg":"","code":0,"data":
-        {"userCity":"大连","userOnlineFlag":true,"userPoint":8971,"userAppRole":"0","userIntro":"","userNo":"1809",
-        "onlineMinute":57597,"userAvatarURL":"https://pwl.stackoverflow.wiki/2021/12/blob-0b83b50c.png",
-        "userNickname":"和平哥","oId":"1637917131504","userName":"iwpz","cardBg":"","followingUserCount":0,"sysMetal":
-        "{\"list\":[{\"data\":\"\",\"name\":\"摸鱼派粉丝\",\"description\":\"捐助摸鱼派达16RMB\",\"attr\":\"url=https://pwl.stackoverflow.wiki/2021/12/ht1-d8149de4.jpg&backcolor=ffffff&
-flutter: fontcolor=ff3030\",\"enabled\":true},{\"data\":\"\",\"name\":\"开发\",\"description\":\"摸鱼派官方开发组成员\",\"attr\":\"url=https://pwl.stackoverflow.wiki/2021/12/metaldev-db507262.png&backcolor=483d8b&fontcolor=f8f8ff\",\"enabled\":true},{\"data\":\"\",\"name\":\"纪律委员\",\"description\":\"摸鱼派管理组成员\",\"attr\":\"url=https://pwl.stackoverflow.wiki/2021/12/011shield-46ce360b.jpg&backcolor=2568ff&fontcolor=ffffff\",\"enabled\":true}]}",
-"userRole":"纪律委员","followerCount":0,"userURL":""}}
-         */
-        // debugPrint('check data:');
-        // debugPrint(DataManager.myInfo.toString());
         medalList = json.decode(DataManager.myInfo['sysMetal'].toString())['list'];
-        print(medalList);
       });
       setState(() {
         title = DataManager.myInfo['userNickname'];
@@ -74,7 +76,7 @@ flutter: fontcolor=ff3030\",\"enabled\":true},{\"data\":\"\",\"name\":\"开发\"
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            // padding: EdgeInsets.only(top: MediaQuery.of(context).size.width / 6),
+            // padding: const EdgeInsets.only(top: MediaQuery.of(context).size.width / 6),
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.width / 2,
             decoration: BoxDecoration(
@@ -111,7 +113,7 @@ flutter: fontcolor=ff3030\",\"enabled\":true},{\"data\":\"\",\"name\":\"开发\"
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      // SizedBox(width: 20),
+                      // const SizedBox(width: 20),
                       Column(
                         children: [
                           SizedBox(
@@ -126,14 +128,12 @@ flutter: fontcolor=ff3030\",\"enabled\":true},{\"data\":\"\",\"name\":\"开发\"
                                   ? SizedBox(
                                       height: 20,
                                       width: 64,
-                                      // margin: const EdgeInsets.only(top: 10),
                                       child: Image.network('https://pwl.stackoverflow.wiki/policeRole.png'),
                                     )
                                   : DataManager.myInfo['userRole'] == '管理员'
                                       ? SizedBox(
                                           height: 20,
                                           width: 64,
-                                          // margin: const EdgeInsets.only(top: 10),
                                           child: Image.network('https://pwl.stackoverflow.wiki/adminRole.png'),
                                         )
                                       : Container(),
@@ -164,7 +164,7 @@ flutter: fontcolor=ff3030\",\"enabled\":true},{\"data\":\"\",\"name\":\"开发\"
                                       DataManager.myInfo['userName'],
                                       style: const TextStyle(fontSize: 14, color: Color.fromARGB(138, 00, 00, 0)),
                                     ),
-                                    // const SizedBox(height: 10),
+                                    // const  SizedBox(height: 10),
                                   ],
                                 ),
                                 const SizedBox(width: 20),
@@ -194,6 +194,195 @@ flutter: fontcolor=ff3030\",\"enabled\":true},{\"data\":\"\",\"name\":\"开发\"
             ),
           ),
           const SizedBox(height: 20),
+          DataManager.receivePrivateMessageList.isNotEmpty || DataManager.sendPrivateMessageList.isNotEmpty
+              ? Container(
+                  margin: const EdgeInsets.only(left: 20),
+                  child: const Text(
+                    '私信：',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                )
+              : Container(),
+          DataManager.receivePrivateMessageList.isNotEmpty || DataManager.sendPrivateMessageList.isNotEmpty
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DataManager.receivePrivateMessageList.isNotEmpty
+                        ? Container(
+                            margin: const EdgeInsets.only(left: 30),
+                            child: const Text(
+                              '收到的私信：',
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          )
+                        : Container(),
+                    DataManager.receivePrivateMessageList.isNotEmpty
+                        ? Container(
+                            margin: const EdgeInsets.only(left: 40),
+                            alignment: Alignment.centerLeft,
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(DataManager.receivePrivateMessageList.length, (index) {
+                                  var revPM = DataManager.receivePrivateMessageList[index];
+                                  return Container(
+                                    alignment: Alignment.centerLeft,
+                                    margin: const EdgeInsets.only(top: 10),
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                          bottom: BorderSide(
+                                        width: 1,
+                                        color: Color(0xFFCECECE),
+                                      )),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  const Text('来自：'),
+                                                  Image.network(
+                                                    revPM['fromUserAvatar'],
+                                                    height: 30,
+                                                    width: 30,
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                  Text('${revPM['fromUserName']}'),
+                                                  const SizedBox(width: 10),
+                                                  Text('主题：${revPM['theme']}'),
+                                                ],
+                                              ),
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(
+                                                    height: 40,
+                                                    child: Text('正文：${revPM['content']}'),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () async {
+                                            var res = await Api.markPMReaded(revPM['mapId']);
+                                            if (res['code'] == 0) {
+                                              _getPrivateMessage();
+                                            }
+                                          },
+                                          child: Container(
+                                            margin: const EdgeInsets.only(right: 16),
+                                            padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+                                            decoration: BoxDecoration(
+                                              color: GlobalStyle.mainThemeColor,
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: const Text('已读',
+                                                style: TextStyle(
+                                                  color: Color(0xFFd23f31),
+                                                )),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                })),
+                          )
+                        : Container(),
+                    DataManager.sendPrivateMessageList.isNotEmpty
+                        ? Container(
+                            margin: const EdgeInsets.only(left: 30),
+                            child: const Text(
+                              '发出的私信：',
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          )
+                        : Container(),
+                    DataManager.sendPrivateMessageList.isNotEmpty
+                        ? Container(
+                            margin: const EdgeInsets.only(left: 40),
+                            alignment: Alignment.centerLeft,
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(DataManager.sendPrivateMessageList.length, (index) {
+                                  var revPM = DataManager.sendPrivateMessageList[index];
+                                  return Container(
+                                    alignment: Alignment.centerLeft,
+                                    margin: const EdgeInsets.only(top: 10),
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                          bottom: BorderSide(
+                                        width: 1,
+                                        color: Color(0xFFCECECE),
+                                      )),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  const Text('发送给：'),
+                                                  Image.network(
+                                                    revPM['toUserAvatar'],
+                                                    height: 30,
+                                                    width: 30,
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                  Text('${revPM['toUserName']}'),
+                                                  const SizedBox(width: 10),
+                                                  Text('主题：${revPM['theme']}'),
+                                                ],
+                                              ),
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(
+                                                    height: 40,
+                                                    child: Text('正文：${revPM['content']}'),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () async {
+                                            var res = await Api.revokePM(revPM['mapId']);
+                                            if (res['code'] == 0) {
+                                              _getPrivateMessage();
+                                            }
+                                          },
+                                          child: Container(
+                                            margin: const EdgeInsets.only(right: 16),
+                                            padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+                                            decoration: BoxDecoration(
+                                              color: GlobalStyle.mainThemeColor,
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: const Text('撤回',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                )),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                })),
+                          )
+                        : Container()
+                  ],
+                )
+              : Container(),
+          const SizedBox(height: 20),
           Container(
             margin: const EdgeInsets.only(left: 20),
             child: const Text(
@@ -203,11 +392,6 @@ flutter: fontcolor=ff3030\",\"enabled\":true},{\"data\":\"\",\"name\":\"开发\"
           ),
           Expanded(
             child: ListView(
-              // alignment: WrapAlignment.start,
-              // runAlignment: WrapAlignment.start,
-              // crossAxisAlignment: WrapCrossAlignment.center,
-              // spacing: 5,
-              // runSpacing: 5,
               children: List.generate(
                 medalList.length,
                 (index) {

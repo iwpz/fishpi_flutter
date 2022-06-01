@@ -7,8 +7,15 @@ class BasePage extends StatefulWidget {
   final PreferredSizeWidget? appBar;
   final Widget? bottomPanel;
   final Color? backgroundColor;
-  const BasePage({Key? key, required this.child, this.appBar, this.bottomPanel, this.backgroundColor = Colors.white})
-      : super(key: key);
+  final bool? scaleWithKeyboard;
+  const BasePage({
+    Key? key,
+    required this.child,
+    this.appBar,
+    this.bottomPanel,
+    this.backgroundColor = Colors.white,
+    this.scaleWithKeyboard = false,
+  }) : super(key: key);
 
   @override
   _BasePageState createState() => _BasePageState();
@@ -21,6 +28,7 @@ class _BasePageState extends State<BasePage> {
       child: Scaffold(
         appBar: widget.appBar,
         backgroundColor: widget.backgroundColor,
+        resizeToAvoidBottomInset: widget.scaleWithKeyboard,
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();

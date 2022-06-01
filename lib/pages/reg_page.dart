@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class RegPage extends StatefulWidget {
-  RegPage({Key? key}) : super(key: key);
+  const RegPage({Key? key}) : super(key: key);
 
   @override
   State<RegPage> createState() => _RegPageState();
@@ -47,7 +47,7 @@ class _RegPageState extends State<RegPage> {
   @override
   Widget build(BuildContext context) {
     return BasePage(
-      backgroundColor: Color(0xFF1F1F1F),
+      backgroundColor: const Color(0xFF1F1F1F),
       appBar: const BaseAppBar(
         showBack: true,
         title: '',
@@ -65,12 +65,12 @@ class _RegPageState extends State<RegPage> {
                     SizedBox(
                       child: Image.asset('assets/images/icon1024.png', height: 80, width: 80),
                     ),
-                    Text(
+                    const Text(
                       '完成注册',
                       style: TextStyle(color: Colors.white, fontSize: 40),
                     ),
-                    SizedBox(height: 40),
-                    Container(
+                    const SizedBox(height: 40),
+                    SizedBox(
                       height: 40,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -92,7 +92,7 @@ class _RegPageState extends State<RegPage> {
                               },
                             ),
                           ),
-                          SizedBox(width: 40),
+                          const SizedBox(width: 40),
                           const Text(
                             '画家',
                             style: TextStyle(color: Colors.white),
@@ -113,7 +113,7 @@ class _RegPageState extends State<RegPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     SizedBox(
                       height: 40,
                       child: Row(
@@ -123,9 +123,8 @@ class _RegPageState extends State<RegPage> {
                               backgroundColor: Colors.transparent,
                               hintText: '请输入密码',
                               border: Border.all(color: Colors.white),
-                              leftWidget: Icon(Icons.account_circle, color: Colors.white),
-                              // borderRadius: BorderRadius.circular(20),
-                              style: TextStyle(color: Colors.white),
+                              leftWidget: const Icon(Icons.account_circle, color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                               isPassword: true,
                               controller: _pwdController,
                             ),
@@ -133,7 +132,7 @@ class _RegPageState extends State<RegPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     SizedBox(
                       height: 40,
                       child: Row(
@@ -143,8 +142,8 @@ class _RegPageState extends State<RegPage> {
                               backgroundColor: Colors.transparent,
                               hintText: '请确认一次',
                               border: Border.all(color: Colors.white),
-                              leftWidget: Icon(Icons.account_circle, color: Colors.white),
-                              style: TextStyle(color: Colors.white),
+                              leftWidget: const Icon(Icons.account_circle, color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                               isPassword: true,
                               controller: _pwdSureController,
                             ),
@@ -152,7 +151,7 @@ class _RegPageState extends State<RegPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     GestureDetector(
                       onTap: () async {
                         if (_pwdController.text != _pwdSureController.text) {
@@ -180,7 +179,7 @@ class _RegPageState extends State<RegPage> {
                           color: Colors.white,
                           border: Border.all(color: Colors.white),
                         ),
-                        child: Text(
+                        child: const Text(
                           '完成注册',
                           style: TextStyle(color: Color(0xFF1F1F1F)),
                         ),
@@ -194,11 +193,11 @@ class _RegPageState extends State<RegPage> {
                     SizedBox(
                       child: Image.asset('assets/images/icon1024.png', height: 80, width: 80),
                     ),
-                    Text(
+                    const Text(
                       '注册',
                       style: TextStyle(color: Colors.white, fontSize: 40),
                     ),
-                    SizedBox(height: 40),
+                    const SizedBox(height: 40),
                     SizedBox(
                       height: 40,
                       child: Row(
@@ -208,9 +207,9 @@ class _RegPageState extends State<RegPage> {
                               backgroundColor: Colors.transparent,
                               hintText: '请输入用户名',
                               border: Border.all(color: Colors.white),
-                              leftWidget: Icon(Icons.account_circle, color: Colors.white),
+                              leftWidget: const Icon(Icons.account_circle, color: Colors.white),
                               // borderRadius: BorderRadius.circular(20),
-                              style: TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                               controller: _userNameController,
                             ),
                           ),
@@ -222,7 +221,7 @@ class _RegPageState extends State<RegPage> {
                       height: 40,
                       child: Row(
                         children: [
-                          // const SizedBox(
+                          // const  SizedBox(
                           //   width: 70,
                           //   child: Text('密码:',
                           //       style: TextStyle(
@@ -234,9 +233,9 @@ class _RegPageState extends State<RegPage> {
                               backgroundColor: Colors.transparent,
                               hintText: '请输入手机号码',
                               border: Border.all(color: Colors.white),
-                              leftWidget: Icon(Icons.phone_android, color: Colors.white),
+                              leftWidget: const Icon(Icons.phone_android, color: Colors.white),
                               // borderRadius: BorderRadius.circular(20),
-                              style: TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                               controller: phoneNumberController,
                             ),
                           ),
@@ -253,8 +252,8 @@ class _RegPageState extends State<RegPage> {
                               backgroundColor: Colors.transparent,
                               hintText: '请输入验证码',
                               border: Border.all(color: Colors.white),
-                              leftWidget: Icon(Icons.code_sharp, color: Colors.white),
-                              style: TextStyle(color: Colors.white),
+                              leftWidget: const Icon(Icons.code_sharp, color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                               controller: _captchaController,
                             ),
                           ),
@@ -269,7 +268,7 @@ class _RegPageState extends State<RegPage> {
                             },
                             child: Container(
                               width: 100,
-                              margin: EdgeInsets.only(left: 10),
+                              margin: const EdgeInsets.only(left: 10),
                               child: captchaImage.isEmpty ? Container() : Image.network(captchaImage, fit: BoxFit.fill),
                             ),
                           ),
@@ -286,8 +285,8 @@ class _RegPageState extends State<RegPage> {
                               backgroundColor: Colors.transparent,
                               hintText: '请输入短信验证码',
                               border: Border.all(color: Colors.white),
-                              leftWidget: Icon(Icons.code_sharp, color: Colors.white),
-                              style: TextStyle(color: Colors.white),
+                              leftWidget: const Icon(Icons.code_sharp, color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                               controller: _verifyCodeController,
                             ),
                           ),
@@ -318,12 +317,12 @@ class _RegPageState extends State<RegPage> {
                             },
                             child: Container(
                               width: 100,
-                              margin: EdgeInsets.only(left: 10),
+                              margin: const EdgeInsets.only(left: 10),
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.white),
                               ),
-                              child: Text(
+                              child: const Text(
                                 '获取验证码',
                                 style: TextStyle(color: Colors.white),
                               ),
@@ -356,7 +355,7 @@ class _RegPageState extends State<RegPage> {
                               color: Colors.white,
                               border: Border.all(color: Colors.white),
                             ),
-                            child: Text(
+                            child: const Text(
                               '注册',
                               style: TextStyle(color: Color(0xFF1F1F1F)),
                             ),
@@ -365,7 +364,7 @@ class _RegPageState extends State<RegPage> {
                       ],
                     ),
                     showQQLabel
-                        ? Text(
+                        ? const Text(
                             '验证码已发送，请查收。如果您未收到短信，请联系QQ/微信：1101635162',
                             style: TextStyle(color: Colors.white),
                           )
