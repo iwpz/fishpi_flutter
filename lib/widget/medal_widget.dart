@@ -15,6 +15,7 @@ class MedalWidget extends StatelessWidget {
     String fontcolor = attrs[2].split('=')[1];
     int backC = int.parse(backcolor, radix: 16) + 0xFF000000;
     int fontC = int.parse(fontcolor, radix: 16) + 0xFF000000;
+    print(url);
     return SizedBox(
       height: 25,
       width: 120,

@@ -56,14 +56,17 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
-                      postInfo['articleTitleEmoj'],
-                      style: const TextStyle(fontSize: 22),
+                    Container(
+                      margin: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        postInfo['articleTitleEmoj'],
+                        style: const TextStyle(fontSize: 22),
+                      ),
                     ),
                     const SizedBox(height: 10),
                     Row(
                       children: [
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 16),
                         GestureDetector(
                           onTap: () async {
                             var res = await Api.getOtherUserInfo(postInfo['articleAuthor']['userName']);
@@ -115,7 +118,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                       ],
                     ),
                     // InAppWebView(initialData: InAppWebViewInitialData(data: postInfo['articleContent'])),
-                    Html(data: postInfo['articleContent']),
+                    Container(
+                      margin: const EdgeInsets.only(left:16),
+                      child: Html(data: postInfo['articleContent']),
+                    ),
                     postInfo['articleNiceComments'].isEmpty
                         ? Container()
                         : Container(

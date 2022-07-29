@@ -49,10 +49,16 @@ class _ChatListPageState extends State<ChatListPage> with AutomaticKeepAliveClie
       });
     });
     _updateMessageFromData();
+    _getPrivateMessage();
 
     // ChatRoomMessageManager.loadMessage();
 
     super.initState();
+  }
+
+  void _getPrivateMessage() async {
+    var res = await Api.getPrivateMessage();
+    print(res);
   }
 
   void _updateMessageFromData() {
@@ -89,28 +95,42 @@ class _ChatListPageState extends State<ChatListPage> with AutomaticKeepAliveClie
         itemCount: 1,
         itemBuilder: (context, index) {
           if (chatItem == null) {
-            return ChatListItem(
-              title: '聊天室',
-              content: '',
-              time: '',
-              messageId: '',
-              avatar: '',
-              onTap: () {
-                _gotoChatRoom();
-              },
+            return ClipRect(
+              child: Banner(
+                  textDirection: TextDirection.rtl,
+                  location: BannerLocation.topEnd,
+                  color: const Color(0xFFDD0000),
+                  message: '聊天室',
+                  child: ChatListItem(
+                    title: '聊天室',
+                    content: '',
+                    time: '',
+                    messageId: '',
+                    avatar: '',
+                    onTap: () {
+                      _gotoChatRoom();
+                    },
+                  )),
             );
           }
-          return ChatListItem(
-            title: chatItem['userNickname'].toString().isEmpty
-                ? chatItem['userName']
-                : chatItem['userNickname'] + '(${chatItem['userName']})',
-            messageId: chatItem['oId'],
-            content: chatItem['content'].toString(),
-            time: chatItem['time'].toString(),
-            avatar: chatItem['userAvatarURL'].toString(),
-            onTap: () {
-              _gotoChatRoom();
-            },
+          return ClipRect(
+            child: Banner(
+                textDirection: TextDirection.rtl,
+                location: BannerLocation.topStart,
+                color: const Color(0xAA00AAAA),
+                message: '聊天室',
+                child: ChatListItem(
+                  title: chatItem['userNickname'].toString().isEmpty
+                      ? chatItem['userName']
+                      : chatItem['userNickname'] + '(${chatItem['userName']})',
+                  messageId: chatItem['oId'],
+                  content: chatItem['content'].toString(),
+                  time: chatItem['time'].toString(),
+                  avatar: chatItem['userAvatarURL'].toString(),
+                  onTap: () {
+                    _gotoChatRoom();
+                  },
+                )),
           );
         },
       ),

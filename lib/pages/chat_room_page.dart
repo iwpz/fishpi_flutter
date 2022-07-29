@@ -5,6 +5,7 @@ import 'package:fishpi_flutter/api/api.dart';
 import 'package:fishpi_flutter/manager/chat_room_message_manager.dart';
 import 'package:fishpi_flutter/manager/data_manager.dart';
 import 'package:fishpi_flutter/manager/eventbus_manager.dart';
+import 'package:fishpi_flutter/manager/liveness_manager.dart';
 import 'package:fishpi_flutter/pages/chat_message_cell.dart';
 import 'package:fishpi_flutter/pages/user_profile_page.dart';
 import 'package:fishpi_flutter/style/global_style.dart';
@@ -32,6 +33,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> with WidgetsBindingObserver
   List onlineUsers = [];
   Map specifyChoosedUsers = {};
   String currentDiscussing = '';
+  double currentLiveness = 0.0;
   int specifyRedPackCount = 0;
   bool isGettingOldMessage = false;
   int historyMessagePage = 1;
@@ -49,6 +51,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> with WidgetsBindingObserver
   int rockPackType = 0;
   late StreamSubscription messageStream;
   late StreamSubscription historyStream;
+  late StreamSubscription livenessStream;
   double refreshSavedOffset = 0;
 
   @override
@@ -80,16 +83,21 @@ class _ChatRoomPageState extends State<ChatRoomPage> with WidgetsBindingObserver
       }
     });
 
+    setState(() {
+      currentLiveness = LivenessManager.currentLiveness;
+    });
+    livenessStream = eventBus.on<OnLivenessUpdate>().listen((event) {
+      setState(() {
+        currentLiveness = event.liveness;
+      });
+    });
+
     historyStream = eventBus.on<OnHistoryMessageLoaded>().listen((event) {
       refreshController.refreshCompleted();
       if (mounted) {
         setState(() {
           ChatRoomMessageManager.intForUpdateUI++;
         });
-        // double spanOffset = chatScrollController.position.maxScrollExtent - refreshSavedOffset;
-        // Future.delayed(const Duration(milliseconds: 50), () {
-        //   chatScrollController.jumpTo(spanOffset);
-        // });
       }
     });
 
@@ -126,6 +134,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> with WidgetsBindingObserver
     WidgetsBinding.instance!.removeObserver(this);
     historyStream.cancel();
     messageStream.cancel();
+    if (livenessStream != null) {
+      livenessStream.cancel();
+    }
     super.dispose();
   }
 
@@ -539,13 +550,21 @@ class _ChatRoomPageState extends State<ChatRoomPage> with WidgetsBindingObserver
 
   void _onImageSelect() async {
     final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 20,
+    );
     var res = await Api.upload([image]);
     if (res['code'] == 0) {
       Map imgMap = res['data']['succMap'];
       String imageName = imgMap.keys.first;
       String fileUrl = imgMap[imageName];
+      print('请求输入框焦点：');
       _textInputController.text = '![$imageName]($fileUrl)';
+      _textInputNode.unfocus();
+      Future.delayed(const Duration(milliseconds: 50), () {
+        _textInputNode.requestFocus();
+      });
     }
   }
 
@@ -652,6 +671,19 @@ class _ChatRoomPageState extends State<ChatRoomPage> with WidgetsBindingObserver
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
+              height: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    color: Colors.red,
+                    width: MediaQuery.of(context).size.width * currentLiveness,
+                  ),
+                ],
+              ),
+              color: Colors.grey[200],
+            ),
+            Container(
               height: 40,
               margin: const EdgeInsets.only(left: 10),
               child: Row(
@@ -729,20 +761,22 @@ class _ChatRoomPageState extends State<ChatRoomPage> with WidgetsBindingObserver
                 Expanded(
                   child: Container(
                     constraints: const BoxConstraints(
-                      maxHeight: 60,
-                      minHeight: 30.0,
+                      // minHeight: 40,
+                      maxHeight: 40,
                     ),
-                    margin: const EdgeInsets.only(top: 5, bottom: 5, left: 20, right: 20),
+                    margin: const EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
                     child: IWPZTextField(
                       controller: _textInputController,
                       focusNode: _textInputNode,
-                      maxLength: null,
+                      maxLines: 1000,
+                      cursorColor: GlobalStyle.mainThemeColor,
                       textInputAction: TextInputAction.send,
                       borderRadius: BorderRadius.circular(4),
                       keyboardType: TextInputType.text,
-                      contentPaddingValue: 6,
+                      contentPaddingValue: 10,
                       backgroundColor: const Color(0xFFEEEEEE),
                       onSubmitted: (text) {
+                        // _textInputController.text += '\r\n';
                         if (_textInputController.text.isEmpty) {
                         } else {
                           _sendMessageReq(_textInputController.text);

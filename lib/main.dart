@@ -10,9 +10,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: '摸鱼派',
       home: SplashPage(),
+      // initialRoute: 'splash_page',
+      routes: {
+        'splash_page': (context) => const SplashPage(),
+      },
     );
   }
 }

@@ -16,7 +16,7 @@ class MedalIcon extends StatelessWidget {
     return Container(
       height: 25,
       width: 25,
-      margin: const EdgeInsets.only(left: 10),
+      margin: const EdgeInsets.only(left: 0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25),
         border: Border.all(color: const Color(0xFFCECECE), width: 0.5),

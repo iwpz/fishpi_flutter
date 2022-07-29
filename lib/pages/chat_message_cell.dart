@@ -2,17 +2,14 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:fishpi_flutter/api/api.dart';
 import 'package:fishpi_flutter/manager/black_list_manager.dart';
 import 'package:fishpi_flutter/manager/data_manager.dart';
-import 'package:fishpi_flutter/pages/user_profile_page.dart';
+import 'package:fishpi_flutter/pages/image_view_page.dart';
 import 'package:fishpi_flutter/tools/navigator_tool.dart';
 import 'package:fishpi_flutter/widget/medal_icon.dart';
-import 'package:fishpi_flutter/widget/redpack_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_viewer/image_viewer.dart';
 
 class ChatMessageCell extends StatefulWidget {
@@ -106,12 +103,12 @@ class _ChatMessageCellState extends State<ChatMessageCell> {
     Widget messageCell = Material(
       child: Container(
         color: Colors.white,
-        padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+        padding: const EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             message['userName'] == DataManager.myInfo['userName']
-                ? Container(width: MediaQuery.of(context).size.width * 0.3)
+                ? Container(width: MediaQuery.of(context).size.width * 0.2)
                 : GestureDetector(
                     onLongPress: () {
                       if (widget.onUserAvatarLongPress != null) {
@@ -185,14 +182,14 @@ class _ChatMessageCellState extends State<ChatMessageCell> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        height: 40,
-                        margin: const EdgeInsets.only(top: 10),
+                        height: 45,
+                        margin: const EdgeInsets.only(top: 5),
                         child: message['userName'] == DataManager.myInfo['userName']
                             ? Wrap(
                                 direction: Axis.horizontal,
                                 alignment: WrapAlignment.end,
                                 crossAxisAlignment: WrapCrossAlignment.center,
-                                spacing: 5,
+                                spacing: 2,
                                 children: [
                                   ...metals['list'] == null
                                       ? []
@@ -242,11 +239,15 @@ class _ChatMessageCellState extends State<ChatMessageCell> {
                                   data: message['content'],
                                   onImageTap:
                                       (String? url, RenderContext rContext, Map<String, String> attributes, element) {
-                                    ImageViewer.showImageSlider(
-                                      images: [
-                                        url!,
-                                      ],
-                                    );
+                                    if (url != null || url!.isNotEmpty) {
+                                      NavigatorTool.push(context,
+                                          page: ImageViewPage(imageUrl: url), withAnimation: true);
+                                    }
+                                    // ImageViewer.showImageSlider(
+                                    //   images: [
+                                    //     url!,
+                                    //   ],
+                                    // );
                                   },
                                 )
                           : GestureDetector(
@@ -306,7 +307,7 @@ class _ChatMessageCellState extends State<ChatMessageCell> {
                                                 GestureDetector(
                                                   onTap: () async {
                                                     if (widget.onRedpackaetPress != null) {
-                                                      widget.onUserAvatarLongPress!(message, 0);
+                                                      widget.onRedpackaetPress!(message, 0);
                                                     }
                                                   },
                                                   child: Image.asset('assets/images/rock.png', height: 32, width: 32),
@@ -315,7 +316,7 @@ class _ChatMessageCellState extends State<ChatMessageCell> {
                                                 GestureDetector(
                                                   onTap: () async {
                                                     if (widget.onRedpackaetPress != null) {
-                                                      widget.onUserAvatarLongPress!(message, 1);
+                                                      widget.onRedpackaetPress!(message, 1);
                                                     }
                                                   },
                                                   child: Image.asset('assets/images/knife.png', height: 32, width: 32),
@@ -324,7 +325,7 @@ class _ChatMessageCellState extends State<ChatMessageCell> {
                                                 GestureDetector(
                                                   onTap: () async {
                                                     if (widget.onRedpackaetPress != null) {
-                                                      widget.onUserAvatarLongPress!(message, 2);
+                                                      widget.onRedpackaetPress!(message, 2);
                                                     }
                                                   },
                                                   child: Image.asset('assets/images/rul.png', height: 32, width: 32),
@@ -351,13 +352,20 @@ class _ChatMessageCellState extends State<ChatMessageCell> {
               ),
             ),
             message['userName'] == DataManager.myInfo['userName']
-                ? Container(
-                    height: 30,
-                    width: 30,
-                    margin: const EdgeInsets.only(left: 10, top: 10, right: 10),
-                    child: CachedNetworkImage(imageUrl: message['userAvatarURL']),
+                ? GestureDetector(
+                    onTap: () async {
+                      if (widget.onUserAvatarPress != null) {
+                        widget.onUserAvatarPress!(message);
+                      }
+                    },
+                    child: Container(
+                      height: 30,
+                      width: 30,
+                      margin: const EdgeInsets.only(left: 10, top: 10, right: 10),
+                      child: CachedNetworkImage(imageUrl: message['userAvatarURL']),
+                    ),
                   )
-                : Container(width: MediaQuery.of(context).size.width * 0.3),
+                : Container(width: MediaQuery.of(context).size.width * 0.2),
           ],
         ),
       ),

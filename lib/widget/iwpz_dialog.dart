@@ -49,7 +49,7 @@ class IWPZDialog {
                         title.isEmpty
                             ? Container()
                             : Container(
-                                margin: const EdgeInsets.only(bottom: 20),
+                                margin: const EdgeInsets.only(bottom: 20, left: 10),
                                 child: Text(
                                   title,
                                   style: TextStyle(
@@ -67,17 +67,18 @@ class IWPZDialog {
                               )
                             : content.isEmpty
                                 ? Container()
-                                : SizedBox(
+                                : Container(
+                                    margin: const EdgeInsets.only(left: 20),
                                     child: Text(
                                       content,
                                       style: const TextStyle(
                                         fontSize: 19,
-                                        color: Colors.white,
+                                        color: Colors.black,
                                       ),
                                     ),
                                   ),
                         SizedBox(
-                          height: 72,
+                          height: 100,
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -99,7 +100,7 @@ class IWPZDialog {
                                             '取消',
                                             style: TextStyle(
                                               fontSize: 19,
-                                              color: Colors.white,
+                                              color: Colors.black,
                                             ),
                                           ),
                                         ),

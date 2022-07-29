@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:fishpi_flutter/api/api.dart';
 import 'package:fishpi_flutter/manager/data_manager.dart';
 import 'package:fishpi_flutter/manager/eventbus_manager.dart';
+import 'package:fishpi_flutter/manager/websocket_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
@@ -10,6 +11,7 @@ class ChatRoomMessageManager {
   static List<dynamic> messageList = List.empty(growable: true);
   static int currentMessagePage = 1;
   static int intForUpdateUI = 0;
+  static StreamSubscription? messageStream;
 
   static void fireNewMessage(var message) {
     debugPrint('cr message manager fire message:');
@@ -45,7 +47,7 @@ class ChatRoomMessageManager {
   }
 
   static void startListening() {
-    ChatRoomMessageManager.listeningNewMessage((message) {
+    messageStream = ChatRoomMessageManager.listeningNewMessage((message) {
       // if (ChatRoomMessageManager.messageList.length > 5000) {
       //   ChatRoomMessageManager.messageList.removeRange(0, 2500);
       // }
@@ -55,12 +57,19 @@ class ChatRoomMessageManager {
       } else if (message['type'] == 'online') {
         DataManager.chatRoomOnLineInfo = message;
         eventBus.fire(OnOnlineStatusUpdate(message));
+      } else if (message['type'] == 'revoke') {
+        String oId = message['oId'];
+        messageList.removeWhere((msg) => msg['oId'] == oId);
+        eventBus.fire(OnOnlineStatusUpdate(message));
       }
     });
     loadMessage();
   }
 
-  static void unlistenNewMessage(StreamSubscription stream) {
-    stream.cancel();
+  static void unlistenNewMessage() {
+    WebsocketManager().destory();
+    if (messageStream != null) {
+      messageStream!.cancel();
+    }
   }
 }

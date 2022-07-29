@@ -16,6 +16,8 @@ class WebsocketManager {
     return _instance;
   }
 
+  static int retryTime = 0;
+
   void init() async {
     String url = AppConfig.baseWsUrl + '/chat-room-channel?apiKey=' + RequestManager.apiKey;
     _socket = await WebSocket.connect(url);
@@ -28,7 +30,19 @@ class WebsocketManager {
         debugPrint('ws onerror');
         debugPrint(error.toString());
       },
-      onDone: () {},
+      onDone: () {
+        if (retryTime < 3) {
+          retryTime++;
+          init();
+        } else {
+          _socket.close();
+          debugPrint('ws ondone');
+        }
+      },
     );
+  }
+
+  void destory() {
+    _socket.close();
   }
 }

@@ -112,6 +112,14 @@ class Api {
     return RequestManager.post('/chat-room/red-packet/open', data: data);
   }
 
+  static addFacePack(List urls) {
+    var data = {
+      'gameId': 'emojis',
+      'data': json.encode(urls),
+    };
+    return RequestManager.post('/api/cloud/sync', data: data);
+  }
+
   static upload(List files) async {
     var fileList = [];
     for (var i = 0; i < files.length; i++) {
@@ -202,7 +210,7 @@ class Api {
   }
 
   static getPrivateMessage() {
-    return RequestManager.get('/api/idle-talk');
+    return RequestManager.get('/chat/get-list');
   }
 
   static markPMReaded(String mapId) {
@@ -230,5 +238,9 @@ class Api {
 
   static getCaptcha() {
     return '/captcha';
+  }
+
+  static getLiveness() {
+    return RequestManager.get('/user/liveness');
   }
 }

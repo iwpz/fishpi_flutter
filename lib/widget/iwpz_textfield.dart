@@ -98,7 +98,7 @@ class _IWPZTextFieldState extends State<IWPZTextField> {
           }
         },
         decoration: InputDecoration(
-          isCollapsed: true,
+          // isCollapsed: true,
           counterText: '',
           prefixIcon: widget.leftWidget == null
               ? null
@@ -117,10 +117,13 @@ class _IWPZTextFieldState extends State<IWPZTextField> {
                 ),
           hintText: widget.hintText ?? '',
           hintStyle: widget.hintStyle == null
-              ? const TextStyle(color: Color(0xff757575), fontSize: 14, height: 1.4)
+              ? const TextStyle(color: Color(0xff757575), fontSize: 14, height: 1)
               : widget.hintStyle!,
           enabled: widget.enabled!,
-          contentPadding: EdgeInsets.only(left: 10, bottom: widget.contentPaddingValue!),
+          // contentPadding: EdgeInsets.zero,
+          isDense: true,
+          // contentPadding: EdgeInsets.symmetric(vertical: 0),
+          // contentPadding: EdgeInsets.only(left: 5, right: 5, top: widget.contentPaddingValue!),
           border: InputBorder.none,
         ),
       ),

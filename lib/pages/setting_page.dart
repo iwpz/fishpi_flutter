@@ -1,10 +1,16 @@
 import 'package:fishpi_flutter/manager/black_list_manager.dart';
+import 'package:fishpi_flutter/manager/chat_room_message_manager.dart';
+import 'package:fishpi_flutter/manager/liveness_manager.dart';
+import 'package:fishpi_flutter/manager/request_manager.dart';
 import 'package:fishpi_flutter/pages/about_page.dart';
 import 'package:fishpi_flutter/pages/black_list_page.dart';
+import 'package:fishpi_flutter/pages/login_page.dart';
 import 'package:fishpi_flutter/pages/privacy_page.dart';
 import 'package:fishpi_flutter/pages/setting_item.dart';
+import 'package:fishpi_flutter/pages/splash_page.dart';
 import 'package:fishpi_flutter/style/global_style.dart';
 import 'package:fishpi_flutter/tools/navigator_tool.dart';
+import 'package:fishpi_flutter/tools/sp_tool.dart';
 import 'package:fishpi_flutter/widget/base_app_bar.dart';
 import 'package:fishpi_flutter/widget/base_page.dart';
 import 'package:fishpi_flutter/widget/iwpz_dialog.dart';
@@ -28,7 +34,7 @@ class _SettingPageState extends State<SettingPage> {
       ),
       child: IWPZTableView(
         rowCount: (section) {
-          return 3;
+          return 4;
         },
         row: (indexPath) {
           if (indexPath.row == 0) {
@@ -50,6 +56,29 @@ class _SettingPageState extends State<SettingPage> {
               title: '关于',
               onTap: () {
                 NavigatorTool.push(context, page: AboutPage());
+              },
+            );
+          } else if (indexPath.row == 3) {
+            BuildContext ctx = context;
+            return SettingItem(
+              title: '退出登录',
+              onTap: () {
+                IWPZDialog.show(
+                  context,
+                  title: '提示',
+                  content: '确定退出登录吗？',
+                  showCancel: true,
+                  onOKTap: () {
+                    RequestManager.updateApiKey("");
+                    ChatRoomMessageManager.unlistenNewMessage();
+                    LivenessManager.stopUpdateLiveness();
+                    SPTool().removeStorage('ApiKey');
+                    NavigatorTool.pop(context);
+                    Future.delayed(const Duration(milliseconds: 50), () {
+                      NavigatorTool.push(ctx, page: const SplashPage());
+                    });
+                  },
+                );
               },
             );
           }

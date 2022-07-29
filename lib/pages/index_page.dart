@@ -1,5 +1,6 @@
 import 'package:fishpi_flutter/manager/black_list_manager.dart';
 import 'package:fishpi_flutter/manager/chat_room_message_manager.dart';
+import 'package:fishpi_flutter/manager/liveness_manager.dart';
 import 'package:fishpi_flutter/manager/websocket_manager.dart';
 import 'package:fishpi_flutter/pages/mine_page.dart';
 import 'package:fishpi_flutter/pages/post_list_page.dart';
@@ -20,10 +21,10 @@ class _IndexPageState extends State<IndexPage> {
   int _tabIndex = 0;
 
   final pages = [
-    PostListPage(),
-    ChatListPage(),
-    WindMoonPage(),
-    MinePage(),
+    const PostListPage(),
+    const ChatListPage(),
+    const WindMoonPage(),
+    const MinePage(),
   ];
   late PageController _pageController;
 
@@ -34,6 +35,8 @@ class _IndexPageState extends State<IndexPage> {
     ChatRoomMessageManager.startListening();
     super.initState();
     _initBlackList();
+    LivenessManager.startUpdateLiveness();
+
     _pageController = PageController(initialPage: _tabIndex, keepPage: true);
   }
 
@@ -58,7 +61,7 @@ class _IndexPageState extends State<IndexPage> {
               _pageController.jumpToPage(index);
             });
           },
-          items: [
+          items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.article_outlined, color: GlobalStyle.mainThemeColor),
               activeIcon: Icon(Icons.article, color: GlobalStyle.mainThemeColor),
@@ -67,7 +70,7 @@ class _IndexPageState extends State<IndexPage> {
             BottomNavigationBarItem(
               icon: Icon(Icons.chat_outlined, color: GlobalStyle.mainThemeColor),
               activeIcon: Icon(Icons.chat_rounded, color: GlobalStyle.mainThemeColor),
-              label: '聊天室',
+              label: '聊天',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.nightlight_outlined, color: GlobalStyle.mainThemeColor),

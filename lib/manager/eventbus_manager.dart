@@ -21,6 +21,11 @@ class OnOnlineStatusUpdate {
   OnOnlineStatusUpdate(this.onlineMessage);
 }
 
+class OnLivenessUpdate {
+  double liveness;
+  OnLivenessUpdate(this.liveness);
+}
+
 class OnBlackListChangeEvent {
   OnBlackListChangeEvent();
 }

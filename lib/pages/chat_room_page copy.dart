@@ -76,7 +76,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
   @override
   void dispose() {
-    ChatRoomMessageManager.unlistenNewMessage(stream);
+    ChatRoomMessageManager.unlistenNewMessage();
     super.dispose();
   }
 

@@ -43,13 +43,15 @@ dependencies:
   pull_to_refresh: ^2.0.0
   auto_size_text: ^3.0.0
   w_popup_menu: ^1.0.0
-  flutter_inappwebview: ^5.3.2
+  flutter_inappwebview: ^5.4.3+7
   cupertino_icons: ^1.0.2
   convert: ^3.0.1
   crypto: ^3.0.1
   package_info: ^2.0.2
   url_launcher: ^6.1.2
   html_editor_enhanced: ^2.4.0+1
+  extended_image: ^6.1.0
+  image_gallery_saver: ^1.7.1
 
 dev_dependencies:
   flutter_test:

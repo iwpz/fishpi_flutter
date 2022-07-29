@@ -59,7 +59,7 @@ class _PostListItemState extends State<PostListItem> {
                         const SizedBox(width: 5),
                         Text(
                           '${widget.postItem['articleAuthor']['userNickname']}（${widget.postItem['articleAuthor']['userName']}）',
-                          style: const TextStyle(fontSize: 12, color: Color(0xFF333333)),
+                          style: const TextStyle(fontSize: 10, color: Color(0xFF333333)),
                         ),
                         const Icon(Icons.remove_red_eye, color: Color(0xFFCCCCCC), size: 16),
                         const SizedBox(width: 5),

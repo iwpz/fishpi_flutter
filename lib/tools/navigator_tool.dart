@@ -14,27 +14,41 @@ class NavigatorTool {
     });
   }
 
+  static Route _createRoute(Widget page) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return child;
+      },
+    );
+  }
+
   static push(
     BuildContext context, {
     required Widget page,
     String routeName = '',
     bool isModal = false,
     Function(dynamic)? then,
+    bool withAnimation = false,
   }) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(
-            fullscreenDialog: isModal,
-            settings: RouteSettings(
-              name: routeName.isEmpty ? page.toString().toLowerCase() : routeName,
-            ),
-            builder: (context) {
-              return page;
-            }))
-        .then((value) {
-      if (then != null) {
-        then(value);
-      }
-    });
+    if (withAnimation) {
+      Navigator.of(context).push(_createRoute(page));
+    } else {
+      Navigator.of(context)
+          .push(MaterialPageRoute(
+              fullscreenDialog: isModal,
+              settings: RouteSettings(
+                name: routeName.isEmpty ? page.toString().toLowerCase() : routeName,
+              ),
+              builder: (context) {
+                return page;
+              }))
+          .then((value) {
+        if (then != null) {
+          then(value);
+        }
+      });
+    }
   }
 
   static pushAndRemove(

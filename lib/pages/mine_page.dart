@@ -25,7 +25,7 @@ class _MinePageState extends State<MinePage> {
   @override
   void initState() {
     _getUserInfo();
-    _getPrivateMessage();
+    // _getPrivateMessage();
     super.initState();
   }
 

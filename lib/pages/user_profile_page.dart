@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:fishpi_flutter/api/api.dart';
 import 'package:fishpi_flutter/manager/black_list_manager.dart';
+import 'package:fishpi_flutter/manager/data_manager.dart';
 import 'package:fishpi_flutter/pages/send_pm_page.dart';
 import 'package:fishpi_flutter/style/global_style.dart';
 import 'package:fishpi_flutter/tools/navigator_tool.dart';
@@ -43,40 +44,44 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Widget build(BuildContext context) {
     return BasePage(
       appBar: BaseAppBar(
-        title: widget.userProfile['userNickname'],
+        title: widget.userProfile['userNickname'] == null
+            ? widget.userProfile['userName']
+            : '${widget.userProfile['userNickname']}(${widget.userProfile['userName']})',
         showBack: true,
         backgroundColor: GlobalStyle.mainThemeColor,
         rightWidget: Container(
           margin: const EdgeInsets.only(right: 20),
-          child: PopupMenuButton<String>(
-            onSelected: (item) async {
-              debugPrint('点击了$item');
-              if (item == '举报') {
-                await Api.reportMessage(
-                    reportDataType: 2,
-                    reportDataId: widget.userProfile['userName'],
-                    reportMemo: '举报了用户${widget.userProfile['userName']}');
-              } else if (item == '屏蔽') {
-                if (BlackListManager().isInBlackList(widget.userProfile['userName'])) {
-                } else {
-                  BlackListManager().addToBlackList(widget.userProfile['userName']);
-                  NavigatorTool.pop(context);
-                }
-              } else if (item == '私信') {
-                NavigatorTool.push(context, page: SendPMPage(userName: widget.userProfile['userName']));
-              }
-              // NavigatorTool.push(context, page: SendPostPage());
-            },
-            itemBuilder: (BuildContext context) {
-              return {'举报', '屏蔽', '私信'}.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            },
-            child: const Icon(Icons.settings),
-          ),
+          child: widget.userProfile['userName'] == DataManager.myInfo['userName']
+              ? Container()
+              : PopupMenuButton<String>(
+                  onSelected: (item) async {
+                    debugPrint('点击了$item');
+                    if (item == '举报') {
+                      await Api.reportMessage(
+                          reportDataType: 2,
+                          reportDataId: widget.userProfile['userName'],
+                          reportMemo: '举报了用户${widget.userProfile['userName']}');
+                    } else if (item == '屏蔽') {
+                      if (BlackListManager().isInBlackList(widget.userProfile['userName'])) {
+                      } else {
+                        BlackListManager().addToBlackList(widget.userProfile['userName']);
+                        NavigatorTool.pop(context);
+                      }
+                    } else if (item == '私信') {
+                      NavigatorTool.push(context, page: SendPMPage(userName: widget.userProfile['userName']));
+                    }
+                    // NavigatorTool.push(context, page: SendPostPage());
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return {'举报', '屏蔽', '私信'}.map((String choice) {
+                      return PopupMenuItem<String>(
+                        value: choice,
+                        child: Text(choice),
+                      );
+                    }).toList();
+                  },
+                  child: const Icon(Icons.settings),
+                ),
         ),
       ),
       child: Column(
