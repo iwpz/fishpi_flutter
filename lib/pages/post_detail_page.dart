@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class PostDetailPage extends StatefulWidget {
-  var item;
+  final dynamic item;
   PostDetailPage({Key? key, required this.item}) : super(key: key);
 
   @override
@@ -119,7 +119,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     ),
                     // InAppWebView(initialData: InAppWebViewInitialData(data: postInfo['articleContent'])),
                     Container(
-                      margin: const EdgeInsets.only(left:16),
+                      margin: const EdgeInsets.only(left: 16),
                       child: Html(data: postInfo['articleContent']),
                     ),
                     postInfo['articleNiceComments'].isEmpty

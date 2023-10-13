@@ -67,6 +67,7 @@ class _RecentPostListPageState extends State<RecentPostListPage> with AutomaticK
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return IWPZTableView(
       enablePullDown: true,
       enablePullUp: true,

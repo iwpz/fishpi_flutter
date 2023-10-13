@@ -67,6 +67,7 @@ class _GoodPostListPageState extends State<GoodPostListPage> with AutomaticKeepA
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return IWPZTableView(
       enablePullDown: true,
       enablePullUp: true,

@@ -69,13 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: 40,
                 child: Row(
                   children: [
-                    // const SizedBox(
-                    //   width: 70,
-                    //   child: Text('用户名:',
-                    //       style: TextStyle(
-                    //         color: GlobalStyle.mainThemeColor,
-                    //       )),
-                    // ),
+                    // const SizedBox(width: 70, child: Text('用户名:', style: TextStyle(color: Colors.red))),
                     Expanded(
                       child: Container(
                         child: IWPZTextField(

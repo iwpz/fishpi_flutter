@@ -1,6 +1,5 @@
 import 'package:fishpi_flutter/api/api.dart';
 import 'package:fishpi_flutter/manager/chat_room_message_manager.dart';
-import 'package:fishpi_flutter/manager/data_manager.dart';
 import 'package:fishpi_flutter/manager/eventbus_manager.dart';
 import 'package:fishpi_flutter/pages/chat_room_page.dart';
 import 'package:fishpi_flutter/style/global_style.dart';
@@ -85,6 +84,7 @@ class _ChatListPageState extends State<ChatListPage> with AutomaticKeepAliveClie
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BasePage(
       appBar: const BaseAppBar(
         title: '聊天',

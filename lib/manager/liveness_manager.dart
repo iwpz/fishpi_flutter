@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:fishpi_flutter/api/api.dart';
 import 'package:fishpi_flutter/manager/eventbus_manager.dart';
-import 'package:flutter/material.dart';
 
 class LivenessManager {
   static Timer? liveTimer;

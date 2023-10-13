@@ -10,7 +10,6 @@ import 'package:fishpi_flutter/widget/medal_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:image_viewer/image_viewer.dart';
 
 class ChatMessageCell extends StatefulWidget {
   final message;
@@ -132,7 +131,7 @@ class _ChatMessageCellState extends State<ChatMessageCell> {
                 onLongPressStart: (details) {
                   double x = details.globalPosition.dx;
                   double y = details.globalPosition.dy;
-                  final RenderBox? overlay = Overlay.of(context)?.context.findRenderObject() as RenderBox;
+                  final RenderBox? overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
                   RelativeRect position = RelativeRect.fromRect(
                     Rect.fromLTRB(x, y, x + 50, y - 50),
                     Offset.zero & overlay!.size,

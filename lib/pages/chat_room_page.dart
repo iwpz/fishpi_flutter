@@ -57,7 +57,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> with WidgetsBindingObserver
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     messageStream = eventBus.on<OnChatMessageUpdate>().listen((event) {
       var theMessage = event.message;
       if (theMessage['type'] == 'online') {
@@ -115,7 +115,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> with WidgetsBindingObserver
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         if (MediaQuery.of(context).viewInsets.bottom == 0) {
           /// 键盘收回
@@ -131,12 +131,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> with WidgetsBindingObserver
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     historyStream.cancel();
     messageStream.cancel();
-    if (livenessStream != null) {
-      livenessStream.cancel();
-    }
+    // if (livenessStream != null) {
+    livenessStream.cancel();
+    // }
     super.dispose();
   }
 

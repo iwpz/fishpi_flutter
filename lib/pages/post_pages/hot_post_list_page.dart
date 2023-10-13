@@ -66,6 +66,7 @@ class _HotPostListPageState extends State<HotPostListPage> with AutomaticKeepAli
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return IWPZTableView(
       enablePullDown: true,
       enablePullUp: true,

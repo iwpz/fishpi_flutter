@@ -67,6 +67,7 @@ class _RecentReplyPostListPageState extends State<RecentReplyPostListPage> with 
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return IWPZTableView(
       enablePullDown: true,
       enablePullUp: true,

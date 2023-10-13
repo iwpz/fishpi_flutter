@@ -39,18 +39,18 @@ dependencies:
   cached_network_image: ^3.2.0
   image_viewer: ^1.5.0
   flutter_svg: ^1.0.3
-  image_picker: ^0.8.5
+  image_picker: ^1.0.3
   pull_to_refresh: ^2.0.0
   auto_size_text: ^3.0.0
   w_popup_menu: ^1.0.0
-  flutter_inappwebview: ^5.4.3+7
+  flutter_inappwebview: ^5.7.2+3
   cupertino_icons: ^1.0.2
   convert: ^3.0.1
   crypto: ^3.0.1
   package_info: ^2.0.2
   url_launcher: ^6.1.2
   html_editor_enhanced: ^2.4.0+1
-  extended_image: ^6.1.0
+  extended_image: ^8.1.0
   image_gallery_saver: ^1.7.1
 
 dev_dependencies:

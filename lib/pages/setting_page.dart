@@ -1,10 +1,8 @@
-import 'package:fishpi_flutter/manager/black_list_manager.dart';
 import 'package:fishpi_flutter/manager/chat_room_message_manager.dart';
 import 'package:fishpi_flutter/manager/liveness_manager.dart';
 import 'package:fishpi_flutter/manager/request_manager.dart';
 import 'package:fishpi_flutter/pages/about_page.dart';
 import 'package:fishpi_flutter/pages/black_list_page.dart';
-import 'package:fishpi_flutter/pages/login_page.dart';
 import 'package:fishpi_flutter/pages/privacy_page.dart';
 import 'package:fishpi_flutter/pages/setting_item.dart';
 import 'package:fishpi_flutter/pages/splash_page.dart';

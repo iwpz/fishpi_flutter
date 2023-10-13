@@ -5,7 +5,6 @@ import 'package:fishpi_flutter/manager/data_manager.dart';
 import 'package:fishpi_flutter/manager/eventbus_manager.dart';
 import 'package:fishpi_flutter/manager/websocket_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class ChatRoomMessageManager {
   static List<dynamic> messageList = List.empty(growable: true);

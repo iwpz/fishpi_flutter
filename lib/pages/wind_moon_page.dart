@@ -2,7 +2,6 @@ import 'package:fishpi_flutter/api/api.dart';
 import 'package:fishpi_flutter/manager/black_list_manager.dart';
 import 'package:fishpi_flutter/manager/eventbus_manager.dart';
 import 'package:fishpi_flutter/style/global_style.dart';
-import 'package:fishpi_flutter/tools/navigator_tool.dart';
 import 'package:fishpi_flutter/widget/base_app_bar.dart';
 import 'package:fishpi_flutter/widget/base_page.dart';
 import 'package:fishpi_flutter/widget/iwpz_dialog.dart';
